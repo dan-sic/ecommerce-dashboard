@@ -45,11 +45,11 @@ export const AuthForm = () => {
       <CardHeader className="text-center">
         <CardTitle>Sign In</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col items-center text-center space-y-4">
+      <CardContent className="flex flex-col items-center space-y-4 text-center">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-2 w-full"
+            className="w-full space-y-2"
           >
             <FormField
               control={form.control}
