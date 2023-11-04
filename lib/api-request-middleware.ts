@@ -1,8 +1,7 @@
 import createHttpError from "http-errors"
-import { getServerSession } from "next-auth"
 
 import { apiErrorHandler } from "@/lib/api-error-handler"
-import { authOptions } from "@/lib/auth-options"
+import { getSessionUser } from "@/lib/auth-options"
 
 export const apiRequestMiddleware =
   ({
@@ -15,11 +14,7 @@ export const apiRequestMiddleware =
   async (req: Request) => {
     try {
       if (isProtectedRoute) {
-        const session = await getServerSession(authOptions)
-
-        if (!session?.user) {
-          throw new createHttpError.Unauthorized()
-        }
+        await getSessionUser()
 
         return handler(req)
       }

@@ -1,15 +1,15 @@
 "use client"
 
-import { useModalStore } from "@/store/use-modal-store"
+import { useRouter } from "next/navigation"
 import { useToast } from "@/store/use-toast-store"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Store } from "@prisma/client"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { apiClient } from "@/lib/api-client"
 import { storeSchema } from "@/lib/validation-schemas/create-store"
-import { AppDialog } from "@/components/ui/app-dialog"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { DialogHeader, DialogTitle } from "./ui/dialog"
+import { DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
 
 type FormData = z.infer<typeof storeSchema>
 
@@ -34,12 +34,14 @@ export const CreateStoreModal = ({
   const form = useForm<FormData>({
     resolver: zodResolver(storeSchema),
   })
+  const router = useRouter()
 
   const { mutate, isLoading } = useMutation({
-    mutationFn: (data: FormData) => apiClient.post("/stores", data),
-    onSuccess: () => {
+    mutationFn: (data: FormData) => apiClient.post<Store>("/stores", data),
+    onSuccess: (data) => {
       toast({ title: "Store created!" })
       closeModal()
+      router.replace(`/${data.data.id}`)
     },
     onError: (error) => {
       toast({ title: "Something went wrong" })
@@ -69,11 +71,11 @@ export const CreateStoreModal = ({
               </FormItem>
             )}
           />
-          <AppDialog.Footer>
+          <DialogFooter>
             <Button className="w-full" type="submit">
               Submit
             </Button>
-          </AppDialog.Footer>
+          </DialogFooter>
         </form>
       </Form>
     </>

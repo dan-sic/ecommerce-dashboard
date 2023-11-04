@@ -1,5 +1,6 @@
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import NextAuth, { NextAuthOptions } from "next-auth"
+import createHttpError from "http-errors"
+import NextAuth, { getServerSession, NextAuthOptions } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
 import GoogleProvider from "next-auth/providers/google"
 
@@ -37,3 +38,17 @@ export const authOptions = {
     },
   },
 } satisfies NextAuthOptions
+
+/**
+ * Get the session user
+ * To be used only server side
+ */
+export const getSessionUser = async () => {
+  const session = await getServerSession(authOptions)
+
+  if (session?.user) {
+    return session.user
+  } else {
+    throw new createHttpError.Unauthorized()
+  }
+}
