@@ -1,6 +1,7 @@
 "use client"
 
 import { useModalStore } from "@/store/use-modal-store"
+import { useToast } from "@/store/use-toast-store"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
@@ -20,13 +21,16 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
+import { DialogHeader, DialogTitle } from "./ui/dialog"
+
 type FormData = z.infer<typeof storeSchema>
 
-export const CreateStoreModal = () => {
-  const { activeModals, closeModal } = useModalStore()
-  const isOpen = activeModals.includes("create-store")
-  const close = () => closeModal("create-store")
-
+export const CreateStoreModal = ({
+  closeModal,
+}: {
+  closeModal: () => void
+}) => {
+  const { toast } = useToast()
   const form = useForm<FormData>({
     resolver: zodResolver(storeSchema),
   })
@@ -34,12 +38,19 @@ export const CreateStoreModal = () => {
   const { mutate, isLoading } = useMutation({
     mutationFn: (data: FormData) => apiClient.post("/stores", data),
     onSuccess: () => {
-      console.log("success!")
+      toast({ title: "Store created!" })
+      closeModal()
+    },
+    onError: (error) => {
+      toast({ title: "Something went wrong" })
     },
   })
 
   return (
-    <AppDialog isOpen={isOpen} onClose={close} title="Create New Store">
+    <>
+      <DialogHeader>
+        <DialogTitle>Create New Store</DialogTitle>
+      </DialogHeader>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit((data) => mutate(data))}
@@ -65,6 +76,6 @@ export const CreateStoreModal = () => {
           </AppDialog.Footer>
         </form>
       </Form>
-    </AppDialog>
+    </>
   )
 }

@@ -1,33 +1,29 @@
 import { create } from "zustand"
 
-type ModalName = "create-store"
-
 interface Store {
-  activeModals: ModalName[]
-  openModal: (modalName: ModalName) => void
-  closeModal: (modalName: ModalName) => void
+  modal: React.ReactElement | null
+  openModal: (
+    cb: (props: { closeModal: () => void }) => React.ReactElement
+  ) => void
+  closeModal: () => void
 }
 
 const useModalStore = create<Store>((set) => ({
-  activeModals: [],
-  openModal: (modalName) =>
-    set((state) => ({ activeModals: [...state.activeModals, modalName] })),
-  closeModal: (modalName) =>
-    set((state) => ({
-      activeModals: state.activeModals.filter((name) => name !== modalName),
+  modal: null,
+  openModal: (cb) =>
+    set((state) => ({ modal: cb({ closeModal: state.closeModal }) })),
+  closeModal: () =>
+    set(() => ({
+      modal: null,
     })),
 }))
 
-const useIsModalOpen = (modalName: ModalName) => {
-  return useModalStore((state) => state.activeModals.includes(modalName))
+// const useCloseModal = (modalName: ModalName) => {
+//   return useModalStore((state) => state.closeModal.bind(null, modalName))
+// }
+
+const useOpenModal = () => {
+  return useModalStore((state) => state.openModal)
 }
 
-const useCloseModal = (modalName: ModalName) => {
-  return useModalStore((state) => state.closeModal.bind(null, modalName))
-}
-
-const useOpenModal = (modalName: ModalName) => {
-  return useModalStore((state) => state.openModal.bind(null, modalName))
-}
-
-export { useModalStore, useIsModalOpen, useOpenModal, useCloseModal }
+export { useModalStore, useOpenModal }

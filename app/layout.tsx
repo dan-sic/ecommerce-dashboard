@@ -3,8 +3,9 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 
+import { Modal } from "@/components/ui/modal"
+import { Toaster } from "@/components/ui/toaster"
 import { ClientOnly } from "@/components/client-only"
-import { CreateStoreModal } from "@/components/create-store-modal"
 import { Providers } from "@/components/providers"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -21,7 +22,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <Providers>
           {props.children}
           <ClientOnly>
-            <CreateStoreModal />
+            <Modal />
+            <Toaster />
           </ClientOnly>
         </Providers>
       </body>

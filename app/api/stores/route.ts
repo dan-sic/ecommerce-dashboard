@@ -1,12 +1,12 @@
 import { getServerSession } from "next-auth"
 
-import { requestMiddleware } from "@/lib/api-request-middleware"
+import { apiRequestMiddleware } from "@/lib/api-request-middleware"
 import { authOptions } from "@/lib/auth-options"
 import db from "@/lib/db"
 import { validateSchema } from "@/lib/validate-schema"
 import { storeSchema } from "@/lib/validation-schemas/create-store"
 
-const POST = requestMiddleware({
+const POST = apiRequestMiddleware({
   handler: async (req: Request) => {
     const body = await req.json()
     const { name } = validateSchema(body, storeSchema)

@@ -4,7 +4,7 @@ import { getServerSession } from "next-auth"
 import { apiErrorHandler } from "@/lib/api-error-handler"
 import { authOptions } from "@/lib/auth-options"
 
-export const requestMiddleware =
+export const apiRequestMiddleware =
   ({
     handler,
     isProtectedRoute = true,
