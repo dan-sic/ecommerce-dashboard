@@ -3,6 +3,7 @@ import { redirect } from "next/navigation"
 
 import { getSessionUser } from "@/lib/auth-options"
 import prisma from "@/lib/db"
+import { Header } from "@/components/header/header"
 
 interface Props extends React.PropsWithChildren {
   params: { storeId: string }
@@ -21,7 +22,12 @@ const StoreLayout: FC<Props> = async ({ children, params }) => {
     return redirect(`/`)
   }
 
-  return <>{children}</>
+  return (
+    <>
+      <Header />
+      <main className="flex items-center justify-center">{children}</main>
+    </>
+  )
 }
 
 export default StoreLayout

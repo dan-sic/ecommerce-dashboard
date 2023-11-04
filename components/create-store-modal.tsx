@@ -41,6 +41,7 @@ export const CreateStoreModal = ({
     onSuccess: (data) => {
       toast({ title: "Store created!" })
       closeModal()
+      router.refresh()
       router.replace(`/${data.data.id}`)
     },
     onError: (error) => {
@@ -72,7 +73,7 @@ export const CreateStoreModal = ({
             )}
           />
           <DialogFooter>
-            <Button className="w-full" type="submit">
+            <Button isLoading={isLoading} className="w-full" type="submit">
               Submit
             </Button>
           </DialogFooter>
