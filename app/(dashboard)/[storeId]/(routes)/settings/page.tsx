@@ -1,13 +1,9 @@
 import { FC } from "react"
-import { Trash } from "lucide-react"
+import { RemoveStore } from "@/modules/store/components/remove-store"
+import { StoreSettingsForm } from "@/modules/store/components/store-settings-form"
 
 import prisma from "@/lib/db"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { Header } from "@/components/header/header"
-
-import { RemoveStore } from "./components/remove-store"
-import { StoreSettingsForm } from "./components/store-settings-form"
 
 interface Props {
   params: { storeId: string }

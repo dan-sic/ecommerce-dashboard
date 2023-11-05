@@ -1,7 +1,6 @@
 import { FC } from "react"
 
 import prisma from "@/lib/db"
-import { Header } from "@/components/header/header"
 
 interface Props {
   params: { storeId: string }

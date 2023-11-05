@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 
-import { deleteStore } from "../actions/update-store"
+import { deleteStore } from "../actions"
 
 interface RemoveStoreProps {
   store: Store
@@ -54,7 +54,6 @@ export const RemoveStore: FC<RemoveStoreProps> = ({ store }) => {
         </DialogFooter>
       </>
     ))
-    // run(updateStore.bind(null, store.id, data))
   }
 
   return (

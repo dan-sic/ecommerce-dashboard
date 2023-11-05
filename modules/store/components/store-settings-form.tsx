@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { updateStore } from "../actions/update-store"
+import { updateStore } from "../actions"
 
 interface StoreSettingsFormProps {
   store: Store
