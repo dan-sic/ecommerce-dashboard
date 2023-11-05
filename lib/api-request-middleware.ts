@@ -1,5 +1,3 @@
-import createHttpError from "http-errors"
-
 import { apiErrorHandler } from "@/lib/api-error-handler"
 import { getSessionUser } from "@/lib/auth-options"
 

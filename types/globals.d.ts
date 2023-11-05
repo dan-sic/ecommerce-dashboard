@@ -3,7 +3,7 @@ interface ServerAction {
     | {
         success: {
           message: string
-          data?: unknown
+          data?: any
         }
         error?: undefined
       }

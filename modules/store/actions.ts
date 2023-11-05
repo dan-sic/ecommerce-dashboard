@@ -3,8 +3,41 @@
 import { revalidatePath } from "next/cache"
 import { Store } from "@prisma/client"
 
+import { getSessionUser } from "@/lib/auth-options"
 import { DatabaseError } from "@/lib/database-error"
 import prisma from "@/lib/db"
+
+export const createStore: ServerAction = async (data: Pick<Store, "name">) => {
+  try {
+    const user = await getSessionUser()
+
+    const store = await prisma.store.create({
+      data: {
+        name: data.name,
+        userId: user!.id,
+      },
+    })
+
+    revalidatePath("(dashboard)/[storeId]", "layout")
+
+    return {
+      success: {
+        message: "Store has been added.",
+        data: store,
+      },
+    }
+  } catch (e: unknown) {
+    if (DatabaseError.isUniqueConstraintViolation(e)) {
+      return {
+        error: {
+          message: "Store could not be added. Store name must be unique.",
+        },
+      }
+    } else {
+      return { error: { message: "Something went wrong." } }
+    }
+  }
+}
 
 export const updateStore: ServerAction = async (
   storeId: string,

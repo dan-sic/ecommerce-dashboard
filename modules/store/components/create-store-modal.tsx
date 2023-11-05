@@ -1,16 +1,14 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { useToast } from "@/store/use-toast-store"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Store } from "@prisma/client"
-import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { apiClient } from "@/lib/api-client"
+import { useServerAction } from "@/lib/use-server-action"
 import { storeSchema } from "@/lib/validation-schemas/create-store"
 import { Button } from "@/components/ui/button"
+import { DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   Form,
   FormControl,
@@ -21,7 +19,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { DialogFooter, DialogHeader, DialogTitle } from "./ui/dialog"
+import { createStore } from "../actions"
 
 type FormData = z.infer<typeof storeSchema>
 
@@ -30,24 +28,22 @@ export const CreateStoreModal = ({
 }: {
   closeModal: () => void
 }) => {
-  const { toast } = useToast()
+  const { isPending, run } = useServerAction()
   const form = useForm<FormData>({
     resolver: zodResolver(storeSchema),
   })
   const router = useRouter()
 
-  const { mutate, isLoading } = useMutation({
-    mutationFn: (data: FormData) => apiClient.post<Store>("/stores", data),
-    onSuccess: (data) => {
-      toast({ title: "Store created!" })
-      closeModal()
-      router.refresh()
-      router.replace(`/${data.data.id}`)
-    },
-    onError: (error) => {
-      toast({ title: "Something went wrong" })
-    },
-  })
+  const onSubmit = async (data: FormData) => {
+    run({
+      action: createStore.bind(null, data),
+      onSuccess: (store) => {
+        closeModal()
+        router.refresh()
+        router.replace(`/${store.id}`)
+      },
+    })
+  }
 
   return (
     <>
@@ -56,7 +52,7 @@ export const CreateStoreModal = ({
       </DialogHeader>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit((data) => mutate(data))}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-2"
         >
           <FormField
@@ -73,7 +69,7 @@ export const CreateStoreModal = ({
             )}
           />
           <DialogFooter>
-            <Button isLoading={isLoading} className="w-full" type="submit">
+            <Button isLoading={isPending} className="w-full" type="submit">
               Submit
             </Button>
           </DialogFooter>

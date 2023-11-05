@@ -11,7 +11,7 @@ export const useServerAction = () => {
     onSuccess,
   }: {
     action: ServerAction
-    onSuccess?: () => void
+    onSuccess?: (data: any) => void
     onError?: () => void
   }) => {
     startTransition(async () => {
@@ -22,7 +22,7 @@ export const useServerAction = () => {
           title: success.message,
         })
 
-        onSuccess?.()
+        onSuccess?.(success.data)
       }
 
       if (error) {

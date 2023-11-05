@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select"
 import { Separator } from "@/components/ui/separator"
 
-import { CreateStoreModal } from "../create-store-modal"
+import { CreateStoreModal } from "../../modules/store/components/create-store-modal"
 import { Button } from "../ui/button"
 
 interface StoreSelectProps {
