@@ -3,6 +3,7 @@ import { RemoveStore } from "@/modules/store/components/remove-store"
 import { StoreSettingsForm } from "@/modules/store/components/store-settings-form"
 
 import prisma from "@/lib/db"
+import { getEnvVariable } from "@/lib/get-env-variable"
 import { Separator } from "@/components/ui/separator"
 import { ApiAlert } from "@/components/api-alert"
 import { ClientOnly } from "@/components/client-only"
@@ -34,8 +35,8 @@ const StorePage: FC<Props> = async ({ params }) => {
       <Separator className="mb-5 mt-2" />
       <ClientOnly>
         <ApiAlert
-          title="NEXT_PUBLIC_API_URL"
-          description={`${process.env.NEXT_PUBLIC_APP_URL as string}/api/${
+          title="API_URL"
+          description={`${getEnvVariable("NEXT_PUBLIC_APP_URL")}/api/${
             params.storeId
           }`}
           variant="public"

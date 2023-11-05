@@ -5,17 +5,18 @@ import EmailProvider from "next-auth/providers/email"
 import GoogleProvider from "next-auth/providers/google"
 
 import prisma from "@/lib/db"
+import { getEnvVariable } from "@/lib/get-env-variable"
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma) as any,
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: getEnvVariable("GOOGLE_CLIENT_ID"),
+      clientSecret: getEnvVariable("GOOGLE_CLIENT_SECRET"),
     }),
     EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM,
+      server: getEnvVariable("EMAIL_SERVER"),
+      from: getEnvVariable("EMAIL_FROM"),
     }),
   ],
   session: {

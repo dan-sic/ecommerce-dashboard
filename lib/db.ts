@@ -1,4 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client"
+
+import { getEnvVariable } from "./get-env-variable"
 
 declare global {
   // eslint-disable-next-line no-var
@@ -6,7 +8,7 @@ declare global {
 }
 
 let prisma: PrismaClient
-if (process.env.NODE_ENV === 'production') {
+if (getEnvVariable("NODE_ENV") === "production") {
   prisma = new PrismaClient()
 } else {
   if (!global.cachedPrisma) {
