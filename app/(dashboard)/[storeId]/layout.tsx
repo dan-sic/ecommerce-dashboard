@@ -24,8 +24,8 @@ const StoreLayout: FC<Props> = async ({ children, params }) => {
 
   return (
     <>
-      <Header />
-      <main className="flex items-center justify-center">{children}</main>
+      <Header storeId={params.storeId} />
+      <main className="p-10">{children}</main>
     </>
   )
 }

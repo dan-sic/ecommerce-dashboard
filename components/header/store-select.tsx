@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { useOpenModal } from "@/store/use-modal-store"
 import { Store } from "@prisma/client"
 import { PlusCircle, Store as StoreIcon } from "lucide-react"
@@ -30,6 +30,7 @@ export const StoreSelect: FC<StoreSelectProps> = ({ stores }) => {
   const [query, setQuery] = useState("")
   const params = useParams()
   const router = useRouter()
+  const pathName = usePathname()
   const openModal = useOpenModal()
 
   const { storeId } = validateSchema(params, storeIdParam)
@@ -38,7 +39,7 @@ export const StoreSelect: FC<StoreSelectProps> = ({ stores }) => {
     <Select
       value={storeId}
       onOpenChange={() => setQuery("")}
-      onValueChange={(value) => router.push(`/${value}`)}
+      onValueChange={(value) => router.push(pathName.replace(storeId, value))}
     >
       <SelectTrigger className="w-[180px]">
         <div className="flex items-center space-x-2">
