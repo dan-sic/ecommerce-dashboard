@@ -4,6 +4,8 @@ import { StoreSettingsForm } from "@/modules/store/components/store-settings-for
 
 import prisma from "@/lib/db"
 import { Separator } from "@/components/ui/separator"
+import { ApiAlert } from "@/components/api-alert"
+import { ClientOnly } from "@/components/client-only"
 
 interface Props {
   params: { storeId: string }
@@ -29,6 +31,16 @@ const StorePage: FC<Props> = async ({ params }) => {
       </div>
       <Separator className="mb-5 mt-2" />
       <StoreSettingsForm store={store!} />
+      <Separator className="mb-5 mt-2" />
+      <ClientOnly>
+        <ApiAlert
+          title="NEXT_PUBLIC_API_URL"
+          description={`${process.env.NEXT_PUBLIC_APP_URL as string}/api/${
+            params.storeId
+          }`}
+          variant="public"
+        />
+      </ClientOnly>
     </>
   )
 }
