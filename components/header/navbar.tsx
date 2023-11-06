@@ -23,6 +23,16 @@ export const Navbar: FC<Props> = ({ storeId }) => {
         Overview
       </Link>
       <Link
+        href={`/${storeId}/billboards`}
+        className={cn(
+          pathname.includes(`/${storeId}/billboards`)
+            ? "font-semibold"
+            : "font-normal"
+        )}
+      >
+        Billboards
+      </Link>
+      <Link
         href={`/${storeId}/settings`}
         className={cn(
           pathname === `/${storeId}/settings` ? "font-medium" : "font-normal"
