@@ -71,6 +71,7 @@ model Billboard {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   storeId   String
+  imageId   String?
   store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
 
   @@unique([label, storeId])
