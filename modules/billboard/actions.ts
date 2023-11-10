@@ -34,7 +34,6 @@ export const addImageToBillboard = async (
   billboardId: string,
   imageId: string
 ) => {
-  console.log("addImageToBillboard", billboardId, imageId)
   await prisma.billboard.update({
     where: {
       id: billboardId,
@@ -46,14 +45,14 @@ export const addImageToBillboard = async (
 
   return {
     success: {
-      message: "Billboard has been added.",
+      message: "Image has been added to billboard.",
     },
   }
 }
 
 export const updateBillboard: ServerAction = async (
   billboardId: string,
-  data: Pick<Billboard, "label">
+  data: Pick<Billboard, "label"> & { imageId: string | null }
 ) => {
   try {
     await prisma.billboard.update({
@@ -62,6 +61,7 @@ export const updateBillboard: ServerAction = async (
     })
 
     revalidatePath("(dashboard)/[storeId]/billboards", "page")
+    revalidatePath("(dashboard)/[storeId]/billboards/[billboardId]", "page")
 
     return {
       success: {
@@ -70,6 +70,23 @@ export const updateBillboard: ServerAction = async (
     }
   } catch (e: unknown) {
     return { error: { message: "Something went wrong." } }
+  }
+}
+
+export const removeBillboardImage = async (billboardId: string) => {
+  await prisma.billboard.update({
+    where: {
+      id: billboardId,
+    },
+    data: {
+      imageId: null,
+    },
+  })
+
+  return {
+    success: {
+      message: "Billboard image has been removed.",
+    },
   }
 }
 

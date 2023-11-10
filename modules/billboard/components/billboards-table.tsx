@@ -19,6 +19,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { BillboardTableActions } from "./billboards-table-actions"
+
 interface BillboardsTableProps {
   billboards: Billboard[]
 }
@@ -35,6 +37,11 @@ const columns = [
     header: () => "Date Added",
     cell: (data) => <span>{format(data.getValue(), "P p")}</span>,
     size: 200,
+  }),
+  columnHelper.display({
+    id: "actions",
+    cell: (props) => <BillboardTableActions billboard={props.row.original} />,
+    size: 50,
   }),
 ]
 
