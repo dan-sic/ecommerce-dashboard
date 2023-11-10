@@ -1,7 +1,9 @@
-import React, { FC } from "react"
+"use client"
+
+import { FC } from "react"
 import Link from "next/link"
 import { Billboard } from "@prisma/client"
-import { Edit, MoreVertical } from "lucide-react"
+import { Edit, MoreVertical, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -11,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { useRemoveBillboard } from "../hooks/use-remove-billboard"
+
 interface BillboardTableActionsProps {
   billboard: Billboard
 }
@@ -18,6 +22,8 @@ interface BillboardTableActionsProps {
 export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
   billboard,
 }) => {
+  const removeBillboard = useRemoveBillboard()
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,6 +38,10 @@ export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
             Edit
           </DropdownMenuItem>
         </Link>
+        <DropdownMenuItem onClick={() => removeBillboard(billboard)}>
+          <Trash className="mr-2 h-4 w-4" />
+          Remove
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -90,7 +90,7 @@ export const removeBillboardImage = async (billboardId: string) => {
   }
 }
 
-export const deleteBillboard: ServerAction = async (billboardId: string) => {
+export const removeBillboard: ServerAction = async (billboardId: string) => {
   try {
     await prisma.billboard.delete({
       where: { id: billboardId },
