@@ -1,5 +1,7 @@
 import axios from "axios"
 
+import { getEnvVariable } from "./get-env-variable"
+
 export const apiClient = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: `${getEnvVariable("NEXT_PUBLIC_APP_URL")}/api`,
 })
