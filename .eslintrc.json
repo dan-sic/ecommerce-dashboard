@@ -14,7 +14,7 @@
     "react/jsx-key": "off",
     "tailwindcss/no-custom-classname": "off",
     "tailwindcss/classnames-order": "error",
-    "no-process-env": "error"
+    "@next/next/no-img-element": "off"
   },
   "settings": {
     "tailwindcss": {

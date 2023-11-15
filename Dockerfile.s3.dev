@@ -1,0 +1,14 @@
+FROM node:20-alpine
+
+WORKDIR /s3
+
+RUN npm init -y
+
+RUN npm install s3rver
+
+COPY ./s3.js .
+COPY ./cors.xml .
+
+EXPOSE 9000
+
+CMD ["node", "s3.js"]

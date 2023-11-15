@@ -72,6 +72,7 @@ export const BillboardForm: FC<BillboardFormProps> = ({
     form.setValue("imagePreviewUrl", "", { shouldDirty: true })
   }
 
+  console.log(imagePreviewUrl)
   return (
     <Form {...form}>
       <form
@@ -83,17 +84,13 @@ export const BillboardForm: FC<BillboardFormProps> = ({
             className="relative mb-10"
             style={{ width: "500px", height: "300px" }}
           >
-            <Image
+            <img
               src={imagePreviewUrl}
-              fill={true}
               alt="Image preview"
               className="object-contain"
-              priority={true}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw"
             />
             <Button
-              className="absolute top-0"
-              style={{ right: 0 }}
+              className="absolute right-0 top-0"
               onClick={clearImage}
               variant="destructive"
             >

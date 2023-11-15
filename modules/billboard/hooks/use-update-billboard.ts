@@ -33,7 +33,7 @@ export const useUpdateBillboard = () => {
         const imageId = uuidv4()
 
         const { url, fields } = await createPresignedPost(s3Client, {
-          Bucket: "test-bucket",
+          Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
           Key: imageId,
           Fields: {
             key: imageId,

@@ -1,0 +1,50 @@
+version: "3.8"
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile.app.dev
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    networks:
+      - backend
+    command: /bin/sh -c "npx prisma migrate dev && npm run dev"
+    depends_on:
+      - db
+      - s3
+
+  s3:
+    container_name: s3
+    build:
+      context: .
+      dockerfile: Dockerfile.s3.dev
+    volumes:
+      - ./s3:/s3/s3
+    networks:
+      - backend
+    ports:
+      - 9000:9000
+
+  db:
+    container_name: db
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ecommerce_dashboard
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - backend
+    ports:
+      - 5432:5432
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
