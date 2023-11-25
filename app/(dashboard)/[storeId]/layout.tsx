@@ -1,8 +1,8 @@
 import { FC } from "react"
 import { redirect } from "next/navigation"
+import { getStore } from "@/modules/store/data"
 
 import { getSessionUser } from "@/lib/auth-options"
-import prisma from "@/lib/db"
 import { Header } from "@/components/header/header"
 
 interface Props extends React.PropsWithChildren {
@@ -11,12 +11,7 @@ interface Props extends React.PropsWithChildren {
 const StoreLayout: FC<Props> = async ({ children, params }) => {
   const user = await getSessionUser()
 
-  const store = await prisma.store.findFirst({
-    where: {
-      id: params.storeId,
-      userId: user.id,
-    },
-  })
+  const store = await getStore({ storeId: params.storeId, userId: user.id })
 
   if (!store) {
     return redirect(`/`)

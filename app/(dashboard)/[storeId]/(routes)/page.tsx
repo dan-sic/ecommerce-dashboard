@@ -1,4 +1,5 @@
 import { FC } from "react"
+import { getStore } from "@/modules/store/data"
 
 import prisma from "@/lib/db"
 
@@ -7,11 +8,7 @@ interface Props {
 }
 
 const StorePage: FC<Props> = async ({ params }) => {
-  const store = await prisma.store.findFirst({
-    where: {
-      id: params.storeId,
-    },
-  })
+  const store = await getStore({ storeId: params.storeId })
 
   return (
     <>

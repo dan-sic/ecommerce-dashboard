@@ -1,6 +1,7 @@
 import { FC } from "react"
 import { RemoveStore } from "@/modules/store/components/remove-store"
 import { StoreSettingsForm } from "@/modules/store/components/store-settings-form"
+import { getStore } from "@/modules/store/data"
 
 import prisma from "@/lib/db"
 import { getEnvVariable } from "@/lib/get-env-variable"
@@ -13,11 +14,7 @@ interface Props {
 }
 
 const StorePage: FC<Props> = async ({ params }) => {
-  const store = await prisma.store.findFirst({
-    where: {
-      id: params.storeId,
-    },
-  })
+  const store = await getStore({ storeId: params.storeId })
 
   return (
     <>

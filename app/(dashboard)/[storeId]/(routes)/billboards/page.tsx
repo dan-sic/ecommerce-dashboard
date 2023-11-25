@@ -1,6 +1,7 @@
-import { FC } from "react"
+import { cache, FC } from "react"
 import Link from "next/link"
 import { BillboardsTable } from "@/modules/billboard/components/billboards-table"
+import { getBillboards } from "@/modules/billboard/data"
 import { PlusCircle } from "lucide-react"
 
 import prisma from "@/lib/db"
@@ -12,14 +13,7 @@ interface Props {
 }
 
 const BillboardsPage: FC<Props> = async ({ params }) => {
-  const billboards = await prisma.billboard.findMany({
-    where: {
-      storeId: params.storeId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  })
+  const billboards = await getBillboards(params.storeId)
 
   return (
     <>
