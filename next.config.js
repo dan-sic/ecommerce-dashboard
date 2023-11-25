@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  webpack: (config, options) => {
+    config.module.rules.push({
+      test: /\.ssh|(ecosystem\.config|s3)\.js$/,
+      use: "ignore-loader",
+    })
+
+    return config
+  },
   images: {
     remotePatterns: [
       {

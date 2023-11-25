@@ -22,7 +22,7 @@ module.exports = {
       path: process.env.VPS_PATH,
       "pre-deploy-local": "",
       "post-deploy":
-        "source ~/.nvm/nvm.sh && npm install && npm run build && npx prisma migrate deploy && pm2 reload ecosystem.config.js --env production",
+        "source ~/.nvm/nvm.sh && npm install && npx prisma migrate deploy && npx prisma generate && npm run build && pm2 reload ecosystem.config.js --env production",
       "pre-setup": "",
     },
   },
