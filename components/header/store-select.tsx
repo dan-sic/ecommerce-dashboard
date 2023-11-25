@@ -2,14 +2,14 @@
 
 import { FC, useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
+import { storeIdParam } from "@/modules/store/consts/store-schema"
 import { useOpenModal } from "@/store/use-modal-store"
 import { Store } from "@prisma/client"
 import { PlusCircle, Store as StoreIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { validateSchema } from "@/lib/validate-schema"
-import { storeIdParam } from "@/lib/validation-schemas/create-store"
-import { Input, Search } from "@/components/ui/input"
+import { Search } from "@/components/ui/input"
 import {
   Select,
   SelectContent,

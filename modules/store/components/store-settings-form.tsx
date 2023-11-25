@@ -1,13 +1,13 @@
 "use client"
 
 import { FC } from "react"
+import { storeSchema } from "@/modules/store/consts/store-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Store } from "@prisma/client"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { useServerAction } from "@/lib/use-server-action"
-import { storeSchema } from "@/lib/validation-schemas/create-store"
 import { Button } from "@/components/ui/button"
 import {
   Form,

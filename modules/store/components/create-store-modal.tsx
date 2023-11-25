@@ -1,12 +1,12 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { storeSchema } from "@/modules/store/consts/store-schema"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
 import { useServerAction } from "@/lib/use-server-action"
-import { storeSchema } from "@/lib/validation-schemas/create-store"
 import { Button } from "@/components/ui/button"
 import { DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {

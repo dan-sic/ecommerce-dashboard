@@ -6,14 +6,19 @@ import { Store } from "@prisma/client"
 import { getSessionUser } from "@/lib/auth-options"
 import { DatabaseError } from "@/lib/database-error"
 import prisma from "@/lib/db"
+import { validateSchema } from "@/lib/validate-schema"
+
+import { storeSchema } from "./consts/store-schema"
 
 export const createStore: ServerAction = async (data: Pick<Store, "name">) => {
   try {
+    const validatedData = validateSchema(data, storeSchema)
+
     const user = await getSessionUser()
 
     const store = await prisma.store.create({
       data: {
-        name: data.name,
+        name: validatedData.name,
         userId: user!.id,
       },
     })
@@ -44,6 +49,8 @@ export const updateStore: ServerAction = async (
   data: Pick<Store, "name">
 ) => {
   try {
+    const validatedData = validateSchema(data, storeSchema)
+
     await prisma.store.update({
       where: { id: storeId },
       data,

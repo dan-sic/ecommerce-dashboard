@@ -3,7 +3,6 @@ import { useToast } from "@/store/use-toast-store"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
 
-import { getEnvVariable } from "@/lib/get-env-variable"
 import { s3Client } from "@/lib/s3-client"
 
 import { addImageToBillboard, createBillboard } from "../actions"

@@ -4,15 +4,23 @@ import { revalidatePath } from "next/cache"
 import { Billboard } from "@prisma/client"
 
 import prisma from "@/lib/db"
+import { validateSchema } from "@/lib/validate-schema"
+
+import { billboardSchema } from "./consts/billboard-schema"
 
 export const createBillboard = async (
   storeId: string,
   data: Pick<Billboard, "label">
 ) => {
   try {
+    const validatedData = validateSchema(
+      data,
+      billboardSchema.pick({ label: true })
+    )
+
     const billboard = await prisma.billboard.create({
       data: {
-        label: data.label,
+        label: validatedData.label,
         storeId: storeId,
       },
     })
@@ -55,9 +63,17 @@ export const updateBillboard: ServerAction = async (
   data: Pick<Billboard, "label"> & { imageId: string | null }
 ) => {
   try {
+    const validatedData = validateSchema(
+      data,
+      billboardSchema.pick({ label: true })
+    )
+
     await prisma.billboard.update({
       where: { id: billboardId },
-      data,
+      data: {
+        label: validatedData.label,
+        imageId: data.imageId,
+      },
     })
 
     revalidatePath("(dashboard)/[storeId]/billboards", "page")
