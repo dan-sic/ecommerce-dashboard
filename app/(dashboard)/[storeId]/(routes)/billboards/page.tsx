@@ -1,10 +1,9 @@
-import { cache, FC } from "react"
+import { FC } from "react"
 import Link from "next/link"
 import { BillboardsTable } from "@/modules/billboard/components/billboards-table"
 import { getBillboards } from "@/modules/billboard/data"
 import { PlusCircle } from "lucide-react"
 
-import prisma from "@/lib/db"
 import { buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 

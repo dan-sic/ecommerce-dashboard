@@ -1,5 +1,5 @@
 import { FC } from "react"
-import { redirect } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { getStore } from "@/modules/store/data"
 
 import { getSessionUser } from "@/lib/auth-options"
@@ -14,7 +14,7 @@ const StoreLayout: FC<Props> = async ({ children, params }) => {
   const store = await getStore({ storeId: params.storeId, userId: user.id })
 
   if (!store) {
-    return redirect(`/`)
+    notFound()
   }
 
   return (
