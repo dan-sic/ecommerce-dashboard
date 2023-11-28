@@ -1,5 +1,5 @@
-const fs = require("fs")
-const S3rver = require("s3rver")
+import { readFileSync } from "fs"
+import S3rver from "s3rver"
 
 console.log("S3 server running")
 
@@ -9,8 +9,8 @@ new S3rver({
   directory: "./s3",
   configureBuckets: [
     {
-      name: "test-bucket",
-      configs: [fs.readFileSync("./cors.xml")],
+      name: process.env.S3_BUCKET_NAME,
+      configs: [readFileSync("./cors.xml")],
     },
   ],
 }).run()

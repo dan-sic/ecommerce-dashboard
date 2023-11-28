@@ -10,9 +10,10 @@ services:
       - /app/node_modules
     ports:
       - 3000:3000
+      - 5555:5555
     networks:
       - backend
-    command: /bin/sh -c "npx prisma migrate dev && npm run dev"
+    command: /bin/sh -c "npx prisma migrate dev && npx prisma studio & npm run dev"
     depends_on:
       - db
       - s3

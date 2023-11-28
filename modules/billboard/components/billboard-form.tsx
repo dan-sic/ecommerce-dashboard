@@ -72,7 +72,6 @@ export const BillboardForm: FC<BillboardFormProps> = ({
     form.setValue("imagePreviewUrl", "", { shouldDirty: true })
   }
 
-  console.log(imagePreviewUrl)
   return (
     <Form {...form}>
       <form
@@ -87,7 +86,7 @@ export const BillboardForm: FC<BillboardFormProps> = ({
             <img
               src={imagePreviewUrl}
               alt="Image preview"
-              className="object-contain"
+              className="h-full w-full object-contain"
             />
             <Button
               className="absolute right-0 top-0"
@@ -114,7 +113,7 @@ export const BillboardForm: FC<BillboardFormProps> = ({
                       onChange(e.target.files![0])
                       setImagePreview(e.target.files![0])
                     }}
-                    accept=".jpeg,.png"
+                    accept=".jpeg,.png,.webp"
                   />
                 </FormControl>
                 <FormMessage />

@@ -1,9 +1,12 @@
 "use server"
 
 import { revalidatePath } from "next/cache"
+import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { Billboard } from "@prisma/client"
 
+import { UPLOAD_MAX_FILE_SIZE } from "@/lib/consts"
 import prisma from "@/lib/db"
+import { s3Client } from "@/lib/s3-client"
 import { validateSchema } from "@/lib/validate-schema"
 
 import { billboardSchema } from "./consts/billboard-schema"
@@ -122,4 +125,20 @@ export const removeBillboard: ServerAction = async (billboardId: string) => {
   } catch (e: unknown) {
     return { error: { message: "Something went wrong." } }
   }
+}
+
+export const getS3SignedUrl = async ({ fileId }: { fileId: string }) => {
+  const { url, fields } = await createPresignedPost(s3Client, {
+    Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
+    Key: fileId,
+    Fields: {
+      key: fileId,
+    },
+    Conditions: [
+      ["starts-with", "$Content-Type", "image/"],
+      ["content-length-range", 0, UPLOAD_MAX_FILE_SIZE],
+    ],
+  })
+
+  return { url, fields }
 }

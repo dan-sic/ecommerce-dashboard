@@ -10,6 +10,8 @@ const envSchema = z.object({
   EMAIL_FROM: z.string(),
   NEXTAUTH_SECRET: z.string(),
   NODE_ENV: z.string(),
+  S3_HOST: z.string(),
+  S3_BUCKET_NAME: z.string(),
 })
 
 type EnvVariable = keyof z.infer<typeof envSchema>

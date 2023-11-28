@@ -1,15 +1,14 @@
 import { useRouter } from "next/navigation"
 import { useToast } from "@/store/use-toast-store"
-import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { Billboard } from "@prisma/client"
 import { v4 as uuidv4 } from "uuid"
 
-import { s3Client } from "@/lib/s3-client"
-
-import { addImageToBillboard, updateBillboard } from "../actions"
+import {
+  addImageToBillboard,
+  getS3SignedUrl,
+  updateBillboard,
+} from "../actions"
 import { BillboardFormData } from "../consts/billboard-schema"
-
-const UPLOAD_MAX_FILE_SIZE = 1000000
 
 export const useUpdateBillboard = () => {
   const { toast } = useToast()
@@ -32,17 +31,7 @@ export const useUpdateBillboard = () => {
       try {
         const imageId = uuidv4()
 
-        const { url, fields } = await createPresignedPost(s3Client, {
-          Bucket: process.env.NEXT_PUBLIC_S3_BUCKET_NAME!,
-          Key: imageId,
-          Fields: {
-            key: imageId,
-          },
-          Conditions: [
-            ["starts-with", "$Content-Type", "image/"],
-            ["content-length-range", 0, UPLOAD_MAX_FILE_SIZE],
-          ],
-        })
+        const { url, fields } = await getS3SignedUrl({ fileId: imageId })
 
         const uploadData: Record<string, any> = {
           ...fields,
@@ -62,7 +51,7 @@ export const useUpdateBillboard = () => {
         })
 
         await addImageToBillboard(billboard.id, imageId)
-      } catch {
+      } catch (e) {
         toast({
           title: "Image could not be uploaded",
           variant: "destructive",
