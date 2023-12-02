@@ -6,3 +6,8 @@ export const billboardSchema = z.object({
   imagePreviewUrl: z.string().optional(),
 })
 export type BillboardFormData = z.infer<typeof billboardSchema>
+
+export const billboardIdParams = z.object({
+  storeId: z.string(),
+  billboardId: z.string(),
+})

@@ -12,7 +12,7 @@ const GET = apiRequestMiddleware({
 
     const store = await getStore({ storeId, userId: user.id })
 
-    return new Response(JSON.stringify(store), { status: 201 })
+    return new Response(JSON.stringify(store), { status: 200 })
   },
   isProtectedRoute: false,
 })

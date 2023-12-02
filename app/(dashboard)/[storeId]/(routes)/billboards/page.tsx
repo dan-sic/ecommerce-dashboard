@@ -1,4 +1,5 @@
 import { FC } from "react"
+import { Route } from "next"
 import Link from "next/link"
 import { BillboardsTable } from "@/modules/billboard/components/billboards-table"
 import { getBillboards } from "@/modules/billboard/data"

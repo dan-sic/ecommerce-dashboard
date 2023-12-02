@@ -13,3 +13,13 @@ export const getBillboards = cache(
       },
     })
 )
+
+export const getBillboard = cache(
+  async (billboardId: string, storeId: string) =>
+    await prisma.billboard.findFirst({
+      where: {
+        id: billboardId,
+        storeId,
+      },
+    })
+)

@@ -5,6 +5,9 @@ dotenv.config()
 
 /** @type {import('next').NextConfig} */
 export const nextConfig = {
+  experimental: {
+    typedRoutes: true,
+  },
   webpack: (config) => {
     config.module.rules.push({
       include: [

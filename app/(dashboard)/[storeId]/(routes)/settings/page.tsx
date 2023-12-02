@@ -3,8 +3,6 @@ import { RemoveStore } from "@/modules/store/components/remove-store"
 import { StoreSettingsForm } from "@/modules/store/components/store-settings-form"
 import { getStore } from "@/modules/store/data"
 
-import prisma from "@/lib/db"
-import { getEnvVariable } from "@/lib/get-env-variable"
 import { Separator } from "@/components/ui/separator"
 import { ApiAlert } from "@/components/api-alert"
 import { ClientOnly } from "@/components/client-only"
