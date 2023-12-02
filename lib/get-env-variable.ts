@@ -2,7 +2,6 @@ import { z } from "zod"
 
 const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
-  NEXT_PUBLIC_APP_URL: z.string(),
   NEXTAUTH_URL: z.string(),
   DATABASE_URL: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),

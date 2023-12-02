@@ -33,9 +33,7 @@ const StorePage: FC<Props> = async ({ params }) => {
       <ClientOnly>
         <ApiAlert
           title="API_URL"
-          description={`${getEnvVariable("NEXT_PUBLIC_APP_URL")}/api/${
-            params.storeId
-          }`}
+          description={`${process.env.NEXT_PUBLIC_APP_URL}/api/${params.storeId}`}
           variant="public"
         />
       </ClientOnly>

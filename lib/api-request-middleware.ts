@@ -6,7 +6,10 @@ export const apiRequestMiddleware =
     handler,
     isProtectedRoute = true,
   }: {
-    handler: (req: Request) => Promise<Response>
+    handler: (
+      req: Request,
+      params?: Record<string, unknown>
+    ) => Promise<Response>
     isProtectedRoute?: boolean
   }) =>
   async (req: Request) => {

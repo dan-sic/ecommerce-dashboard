@@ -1,8 +1,6 @@
 import { FC } from "react"
 import { getStore } from "@/modules/store/data"
 
-import prisma from "@/lib/db"
-
 interface Props {
   params: { storeId: string }
 }

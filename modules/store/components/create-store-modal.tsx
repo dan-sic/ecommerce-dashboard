@@ -2,11 +2,14 @@
 
 import { useRouter } from "next/navigation"
 import { storeSchema } from "@/modules/store/consts/store-schema"
+import { useToast } from "@/store/use-toast-store"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Store } from "@prisma/client"
+import { useMutation } from "@tanstack/react-query"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 
-import { useServerAction } from "@/lib/use-server-action"
+import { apiClient } from "@/lib/api-client"
 import { Button } from "@/components/ui/button"
 import { DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
@@ -19,8 +22,6 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { createStore } from "../actions"
-
 type FormData = z.infer<typeof storeSchema>
 
 export const CreateStoreModal = ({
@@ -28,22 +29,24 @@ export const CreateStoreModal = ({
 }: {
   closeModal: () => void
 }) => {
-  const { isPending, run } = useServerAction()
   const form = useForm<FormData>({
     resolver: zodResolver(storeSchema),
   })
   const router = useRouter()
+  const { toast } = useToast()
 
-  const onSubmit = async (data: FormData) => {
-    run({
-      action: createStore.bind(null, data),
-      onSuccess: (store) => {
-        closeModal()
-        router.refresh()
-        router.replace(`/${store.id}`)
-      },
-    })
-  }
+  const { mutate, isLoading } = useMutation({
+    mutationFn: (data: FormData) => apiClient.post<Store>("/stores", data),
+    onSuccess: (data) => {
+      toast({ title: "Store created!" })
+      closeModal()
+      router.refresh()
+      router.replace(`/${data.data.id}`)
+    },
+    onError: (error) => {
+      toast({ title: "Something went wrong" })
+    },
+  })
 
   return (
     <>
@@ -52,7 +55,7 @@ export const CreateStoreModal = ({
       </DialogHeader>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit((data) => mutate(data))}
           className="w-full space-y-2"
         >
           <FormField
@@ -69,7 +72,7 @@ export const CreateStoreModal = ({
             )}
           />
           <DialogFooter>
-            <Button isLoading={isPending} className="w-full" type="submit">
+            <Button isLoading={isLoading} className="w-full" type="submit">
               Submit
             </Button>
           </DialogFooter>
