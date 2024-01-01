@@ -1,68 +1,39 @@
 import { useRouter } from "next/navigation"
+import { useModalStore } from "@/store/use-modal-store"
 import { useToast } from "@/store/use-toast-store"
-import { v4 as uuidv4 } from "uuid"
+import { useMutation } from "@tanstack/react-query"
 
-import {
-  addImageToBillboard,
-  createBillboard,
-  getS3SignedUrl,
-} from "../actions"
+import { apiClient } from "@/lib/api-client"
+
 import { BillboardFormData } from "../consts/billboard-schema"
 
 export const useCreateBillboard = () => {
   const { toast } = useToast()
   const router = useRouter()
+  const { closeModal } = useModalStore()
 
-  const action = async (storeId: string, data: BillboardFormData) => {
-    const { success, error } = await createBillboard(storeId, {
-      label: data.label,
-    })
+  return useMutation({
+    mutationFn: ({
+      data,
+      storeId,
+    }: {
+      data: BillboardFormData
+      storeId: string
+    }) => {
+      const formData = new FormData()
+      formData.append("data", JSON.stringify({ label: data.label }))
+      formData.append("file", data.file as Blob)
 
-    if (error) {
-      return toast({
-        title: error.message,
-        variant: "destructive",
-      })
-    }
-
-    if (data.file) {
-      try {
-        const imageId = uuidv4()
-
-        const { url, fields } = await getS3SignedUrl({ fileId: imageId })
-
-        const uploadData: Record<string, any> = {
-          ...fields,
-          "Content-Type": data.file.type,
-        }
-
-        const formData = new FormData()
-        for (const name in uploadData) {
-          formData.append(name, uploadData[name])
-        }
-
-        formData.append("file", data.file)
-
-        await fetch(url, {
-          method: "POST",
-          body: formData,
-        })
-
-        await addImageToBillboard(success.data.id, imageId)
-      } catch {
-        toast({
-          title: "Image could not be uploaded",
-          variant: "destructive",
-        })
-      }
-    }
-
-    toast({
-      title: success.message,
-    })
-
-    router.push(`/${storeId}/billboards`)
-  }
-
-  return action
+      return apiClient.post(`stores/${storeId}/billboards`, formData)
+    },
+    onSuccess: (data, { storeId }) => {
+      toast({ title: "Store created!" })
+      closeModal()
+      router.refresh()
+      router.push(`/${storeId}/billboards`)
+    },
+    onError: (error) => {
+      toast({ title: "Something went wrong" })
+    },
+  })
 }

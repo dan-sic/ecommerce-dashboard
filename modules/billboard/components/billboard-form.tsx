@@ -1,12 +1,13 @@
 "use client"
 
-import { FC, useState, useTransition } from "react"
+import { FC, useCallback, useEffect, useState, useTransition } from "react"
 import Image from "next/image"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Billboard } from "@prisma/client"
 import { X } from "lucide-react"
 import { useForm } from "react-hook-form"
 
+import { ALLOWED_IMAGE_TYPES } from "@/lib/consts"
 import { getS3FileUrl } from "@/lib/get-s3-file-url"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,44 +33,53 @@ export const BillboardForm: FC<BillboardFormProps> = ({
   billboard,
   storeId,
 }) => {
-  const [isPending, startTransition] = useTransition()
-  const createBillboard = useCreateBillboard()
-  const updateBillboard = useUpdateBillboard()
+  const { mutate: createBillboard, isLoading: isBillboardCreatePending } =
+    useCreateBillboard()
+  const { mutate: updateBillboard, isLoading: isBillboardUpdatePending } =
+    useUpdateBillboard()
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(
+    billboard?.imageId ? getS3FileUrl(billboard.imageId) : ""
+  )
 
   const form = useForm<BillboardFormData>({
     resolver: zodResolver(billboardSchema),
     defaultValues: {
       label: billboard?.label ?? "",
       file: null,
-      imagePreviewUrl: billboard?.imageId
-        ? getS3FileUrl(billboard.imageId)
-        : "",
+      imageId: billboard?.imageId ?? null,
     },
+    mode: "onChange",
   })
-  const imagePreviewUrl = form.watch("imagePreviewUrl")
 
   const onSubmit = async (data: BillboardFormData) => {
     if (billboard) {
-      startTransition(() => {
-        updateBillboard(billboard, data)
-      })
+      updateBillboard({ billboardId: billboard.id, storeId, data })
     } else {
-      startTransition(() => {
-        createBillboard(storeId, data)
-      })
+      createBillboard({ storeId, data })
     }
+  }
+
+  const clearImage = () => {
+    setImagePreviewUrl("")
+    form.setValue("file", null, { shouldDirty: true })
+    form.setValue("imageId", null, { shouldDirty: true })
+  }
+
+  console.log(form.getValues())
+
+  const updateImagePreview = async (file: File) => {
+    // waiting for validation to complete before setting preview
+    setTimeout(() => {
+      if (!form.getFieldState("file").invalid) setImagePreview(file)
+    }, 0)
   }
 
   const setImagePreview = (file: File) => {
     const reader = new FileReader()
     reader.onloadend = () => {
-      form.setValue("imagePreviewUrl", reader.result as string)
+      setImagePreviewUrl(reader.result as string)
     }
     reader.readAsDataURL(file)
-  }
-
-  const clearImage = () => {
-    form.setValue("imagePreviewUrl", "", { shouldDirty: true })
   }
 
   return (
@@ -110,10 +120,13 @@ export const BillboardForm: FC<BillboardFormProps> = ({
                   <Input
                     type="file"
                     onChange={(e) => {
-                      onChange(e.target.files![0])
-                      setImagePreview(e.target.files![0])
+                      const file = e.target.files![0]
+                      onChange(file)
+                      updateImagePreview(file)
                     }}
-                    accept=".jpeg,.png,.webp"
+                    accept={ALLOWED_IMAGE_TYPES.map(
+                      (t) => "." + t.split("/")[1]
+                    ).join(",")}
                   />
                 </FormControl>
                 <FormMessage />
@@ -136,7 +149,7 @@ export const BillboardForm: FC<BillboardFormProps> = ({
         />
         <Button
           disabled={!form.formState.isDirty}
-          isLoading={isPending}
+          isLoading={isBillboardCreatePending || isBillboardUpdatePending}
           type="submit"
         >
           {billboard ? "Save Changes" : "Create"}

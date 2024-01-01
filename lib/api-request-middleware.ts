@@ -8,19 +8,19 @@ export const apiRequestMiddleware =
   }: {
     handler: (
       req: Request,
-      params?: Record<string, unknown>
+      params: { params?: Record<string, unknown> }
     ) => Promise<Response>
     isProtectedRoute?: boolean
   }) =>
-  async (req: Request) => {
+  async (req: Request, params: { params?: Record<string, unknown> }) => {
     try {
       if (isProtectedRoute) {
         await getSessionUser()
 
-        return handler(req)
+        return handler(req, params)
       }
 
-      return handler(req)
+      return handler(req, params)
     } catch (e: unknown) {
       return apiErrorHandler(e)
     }

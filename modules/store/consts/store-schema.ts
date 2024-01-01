@@ -5,5 +5,7 @@ export const storeSchema = z.object({
 })
 
 export const storeIdParam = z.object({
-  storeId: z.string(),
+  storeId: z.string({
+    required_error: "storeId is required",
+  }),
 })
