@@ -11,6 +11,9 @@ const envSchema = z.object({
   NODE_ENV: z.string(),
   S3_HOST: z.string(),
   S3_BUCKET_NAME: z.string(),
+  S3_CLIENT_KEY: z.string(),
+  S3_CLIENT_SECRET: z.string(),
+  S3_REGION: z.string(),
 })
 
 type EnvVariable = keyof z.infer<typeof envSchema>

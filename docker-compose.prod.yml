@@ -1,27 +1,5 @@
 version: "3.8"
 services:
-  app:
-    container_name: ${APP_NAME}-app
-    build:
-      context: .
-      dockerfile: Dockerfile.app
-    networks:
-      - backend
-    command: /bin/sh -c "npx prisma migrate deploy && npx prisma generate && npm run build && npm run start"
-    depends_on:
-      - db
-      - s3
-
-  s3:
-    container_name: ${APP_NAME}-s3
-    build:
-      context: .
-      dockerfile: Dockerfile.s3
-    networks:
-      - backend
-    ports:
-      - 9000:9000
-
   db:
     container_name: ${APP_NAME}-db
     image: postgres:15
@@ -35,6 +13,17 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
     restart: always
 
+  app:
+    container_name: ${APP_NAME}-app
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    networks:
+      - backend
+    command: /bin/sh -c "npx prisma migrate deploy && npx prisma generate && npm run build && npm run start"
+    depends_on:
+      - db
+
   nginx:
     container_name: ${APP_NAME}-nginx
     image: nginx:alpine
@@ -44,6 +33,9 @@ services:
       - 8080:80
     networks:
       - backend
+    restart: always
+    depends_on:
+      - app
 
 volumes:
   postgres_data:
