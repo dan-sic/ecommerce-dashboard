@@ -1,5 +1,9 @@
 FROM node:20-alpine
 
+RUN apk --no-cache add nginx
+
+RUN rm /etc/nginx/nginx.conf
+
 WORKDIR /s3
 
 RUN npm init -y
@@ -9,7 +13,8 @@ RUN npm install s3rver
 COPY ./s3.mjs .
 COPY ./cors.xml .
 COPY ./.env .
+COPY ./nginx-s3.conf /etc/nginx/nginx.conf
 
 EXPOSE 9000
 
-CMD ["node", "--env-file", ".env", "s3.mjs"]
+CMD ["sh", "-c", "node --env-file .env s3.mjs & nginx -g 'daemon off;'"]
