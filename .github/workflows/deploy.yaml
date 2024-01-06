@@ -16,8 +16,9 @@ jobs:
         with:
           command: |
             cd /var/www/ecommerce-dashboard
-            docker-compose down
-            git pull origin main --force
+            docker-compose -f docker-compose.prod.yml down
+            git fetch origin main
+            git reset --hard origin/main
             npm run docker:prod
           host: ${{ secrets.HOST }}
           port: ${{ secrets.PORT }}
