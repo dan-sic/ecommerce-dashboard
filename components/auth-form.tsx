@@ -1,11 +1,13 @@
-'use client'
+"use client"
 
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { signIn } from 'next-auth/react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { signIn } from "next-auth/react"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
 import {
   Form,
   FormControl,
@@ -13,8 +15,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from './ui/form'
-import { Input } from './ui/input'
+} from "./ui/form"
+import { Input } from "./ui/input"
 
 const schema = z.object({
   email: z.string().email(),
@@ -27,14 +29,13 @@ export const AuthForm = () => {
   })
 
   const onSubmit = async (data: FormData) => {
-    const result = await signIn('email', {
+    const result = await signIn("email", {
       email: data.email,
-      callbackUrl: '/',
+      callbackUrl: "/",
       redirect: false,
     })
 
     if (result?.ok) {
-      console.log('Email sent')
     } else {
       console.error(result?.error)
     }
@@ -81,7 +82,7 @@ export const AuthForm = () => {
           </div>
         </div>
 
-        <Button className="w-full" onClick={() => signIn('google')}>
+        <Button className="w-full" onClick={() => signIn("google")}>
           Google
         </Button>
       </CardContent>

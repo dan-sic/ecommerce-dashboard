@@ -5,7 +5,7 @@ import { StoreSettingsForm } from "@/modules/store/components/store-settings-for
 import { getStore } from "@/modules/store/data"
 
 import { Separator } from "@/components/ui/separator"
-import { ApiAlert } from "@/components/api-alert"
+import { ApiAlert } from "@/components/api-alert/api-alert"
 import { ClientOnly } from "@/components/client-only"
 
 interface Props {

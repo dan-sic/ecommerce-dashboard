@@ -32,10 +32,10 @@ export const billboardIdParams = z.object({
   billboardId: z.string(),
 })
 
-export const billboardSchema = z.object({
+export const billboardClientModelSchema = z.object({
   id: z.string(),
   label: z.string(),
-  createdAt: z.date(),
+  createdAt: z.date().transform((d) => d.toISOString()),
   storeId: z.string(),
   imageId: z.string().nullable(),
 })

@@ -1,6 +1,6 @@
 "use client"
 
-import { FC, useState } from "react"
+import { FC, useEffect, useState } from "react"
 import { MoonIcon, SunIcon } from "lucide-react"
 
 import { Button } from "../ui/button"
@@ -10,10 +10,11 @@ interface DarkModeProps {
 }
 
 export const DarkMode: FC<DarkModeProps> = ({ className }) => {
-  const [isDarkMode, setIsDarkMode] = useState(
-    document.documentElement.classList.contains("dark") ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-  )
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  useEffect(() => {
+    setIsDarkMode(getDefaultDarkMode())
+  }, [])
 
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle("dark")
@@ -32,5 +33,12 @@ export const DarkMode: FC<DarkModeProps> = ({ className }) => {
         {isDarkMode ? "Disable dark mode" : "Enable dark mode"}
       </span>
     </Button>
+  )
+}
+
+const getDefaultDarkMode = () => {
+  return (
+    document.documentElement.classList.contains("dark") ||
+    window.matchMedia("(prefers-color-scheme: dark)").matches
   )
 }

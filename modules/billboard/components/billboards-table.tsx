@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useMemo } from "react"
-import { BillboardClientModel } from "@/modules/billboard/data"
+import { useQuery } from "@tanstack/react-query"
 import {
   createColumnHelper,
   flexRender,
@@ -11,7 +11,9 @@ import {
 } from "@tanstack/react-table"
 import { format } from "date-fns"
 
-import { formatDate } from "@/lib/utils"
+import { apiClient } from "@/lib/api-client"
+import { queryKeys } from "@/lib/consts/query-keys"
+import { cn, formatDate } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -22,10 +24,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import { BillboardClientModel } from "../types"
 import { BillboardTableActions } from "./billboards-table-actions"
 
 interface BillboardsTableProps {
-  billboards: BillboardClientModel[]
+  storeId: string
 }
 
 const columnHelper = createColumnHelper<BillboardClientModel>()
@@ -34,24 +37,29 @@ const columns = [
   columnHelper.accessor("label", {
     header: () => "Label",
     cell: (data) => <span>{data.getValue()}</span>,
-    size: 200,
   }),
   columnHelper.accessor("createdAt", {
     header: () => "Date Added",
-    cell: (data) => <span>{formatDate(data.getValue())}</span>,
-    size: 200,
+    cell: (data) => <span>{formatDate(new Date(data.getValue()))}</span>,
   }),
   columnHelper.display({
     id: "actions",
     cell: (props) => <BillboardTableActions billboard={props.row.original} />,
-    size: 50,
+    meta: {
+      tdClassName: "text-right",
+    },
   }),
 ]
 
-export const BillboardsTable: FC<BillboardsTableProps> = ({ billboards }) => {
-  console.log(billboards)
+export const BillboardsTable: FC<BillboardsTableProps> = ({ storeId }) => {
+  const { data } = useQuery({
+    queryKey: queryKeys.billboards,
+    queryFn: () =>
+      apiClient.get<BillboardClientModel[]>(`/stores/${storeId}/billboards`),
+  })
+
   const table = useReactTable({
-    data: billboards,
+    data: data?.data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -78,6 +86,7 @@ export const BillboardsTable: FC<BillboardsTableProps> = ({ billboards }) => {
                   <TableHead
                     key={header.id}
                     style={{ width: header.getSize() }}
+                    className={cn(header.column.columnDef.meta?.thClassName)}
                   >
                     {header.isPlaceholder
                       ? null
@@ -99,7 +108,10 @@ export const BillboardsTable: FC<BillboardsTableProps> = ({ billboards }) => {
               data-state={row.getIsSelected() && "selected"}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
+                <TableCell
+                  key={cell.id}
+                  className={cn(cell.column.columnDef.meta?.tdClassName)}
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}

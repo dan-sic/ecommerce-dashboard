@@ -10,7 +10,6 @@ export default withAuth(
     const isAuthPage = req.nextUrl.pathname.startsWith("/signin")
     const isApiRoute = req.nextUrl.pathname.startsWith("/api")
 
-    console.log(req.url)
     if (isAuthPage) {
       if (isAuthenticated) {
         return NextResponse.redirect(new URL("/", req.url))
@@ -19,7 +18,6 @@ export default withAuth(
       return null
     }
 
-    console.log(isApiRoute)
     if (!isAuthenticated && !isApiRoute) {
       let from = req.nextUrl.pathname
       if (req.nextUrl.search) {

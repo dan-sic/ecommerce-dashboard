@@ -1,6 +1,6 @@
 import { FC } from "react"
 
-import { ApiAlert } from "./api-alert"
+import { ApiAlert } from "./api-alert/api-alert"
 
 interface ApiListProps {
   entitityName: {

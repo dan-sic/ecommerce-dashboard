@@ -3,20 +3,7 @@ import { z } from "zod"
 
 import prisma from "@/lib/db"
 
-import { billboardSchema } from "./consts/billboard-schema"
-
-export const getBillboards = cache(async (storeId: string) => {
-  const billboards = await prisma.billboard.findMany({
-    where: {
-      storeId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  })
-
-  return billboards.map(mapToBillboardClientModel)
-})
+import { billboardClientModelSchema } from "./consts/billboard-schema"
 
 export const getBillboard = cache(
   async (billboardId: string, storeId: string) => {
@@ -32,4 +19,4 @@ export const getBillboard = cache(
 )
 
 export const mapToBillboardClientModel = (billboard: unknown) =>
-  billboardSchema.parse(billboard)
+  billboardClientModelSchema.parse(billboard)

@@ -1,20 +1,18 @@
-import { FC } from "react"
+import { FC, Suspense } from "react"
 import Link from "next/link"
 import { BillboardsTable } from "@/modules/billboard/components/billboards-table"
-import { getBillboards } from "@/modules/billboard/data"
 import { PlusCircle } from "lucide-react"
 
 import { buttonVariants } from "@/components/ui/button"
 import { ApiList } from "@/components/api-list"
 import { PageSection } from "@/components/page-section"
+import { TableSkeleton } from "@/components/table-skeleton"
 
 interface Props {
   params: { storeId: string }
 }
 
 const BillboardsPage: FC<Props> = async ({ params }) => {
-  const billboards = await getBillboards(params.storeId)
-
   return (
     <>
       <PageSection
@@ -31,7 +29,9 @@ const BillboardsPage: FC<Props> = async ({ params }) => {
           </Link>
         }
       />
-      <BillboardsTable billboards={billboards} />
+      <Suspense fallback={<TableSkeleton />}>
+        <BillboardsTable storeId={params.storeId} />
+      </Suspense>
       <PageSection
         className="mt-10"
         heading={<PageSection.Heading2>API</PageSection.Heading2>}

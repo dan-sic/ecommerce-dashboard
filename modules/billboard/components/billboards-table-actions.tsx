@@ -2,7 +2,6 @@
 
 import { FC } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useOpenModal } from "@/store/use-modal-store"
 import { Edit, MoreVertical, Trash } from "lucide-react"
 
@@ -25,7 +24,6 @@ export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
   billboard,
 }) => {
   const openModal = useOpenModal()
-  const router = useRouter()
 
   return (
     <DropdownMenu>

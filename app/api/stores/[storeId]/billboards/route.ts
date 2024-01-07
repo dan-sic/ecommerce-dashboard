@@ -3,10 +3,7 @@ import {
   billboardIdParams,
   newBillboardSchema,
 } from "@/modules/billboard/consts/billboard-schema"
-import {
-  getBillboards,
-  mapToBillboardClientModel,
-} from "@/modules/billboard/data"
+import { mapToBillboardClientModel } from "@/modules/billboard/data"
 import { storeIdParam } from "@/modules/store/consts/store-schema"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
@@ -22,9 +19,22 @@ const GET = apiRequestMiddleware({
   handler: async (_, { params }) => {
     const { storeId } = validateSchema(params, storeIdParam)
 
-    const billboards = await getBillboards(storeId)
+    const billboards = await prisma.billboard.findMany({
+      where: {
+        storeId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
 
-    return new Response(JSON.stringify(billboards), { status: 200 })
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
+    const mapped = billboards.map(mapToBillboardClientModel)
+
+    return new Response(JSON.stringify(mapped), {
+      status: 200,
+    })
   },
   isProtectedRoute: false,
 })

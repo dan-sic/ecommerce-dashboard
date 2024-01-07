@@ -1,3 +1,5 @@
+import "@tanstack/react-table"
+
 interface ServerAction {
   (...args: any[]): Promise<
     | {
@@ -14,4 +16,11 @@ interface ServerAction {
         success?: undefined
       }
   >
+}
+
+declare module "@tanstack/react-table" {
+  interface ColumnMeta {
+    thClassName?: string
+    tdClassName?: string
+  }
 }

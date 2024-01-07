@@ -1,11 +1,10 @@
-"use client"
-
 import { useToast } from "@/store/use-toast-store"
-import { Copy, Server } from "lucide-react"
+import { Server } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge, BadgeProps } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+
+import { CopyToClipBoardBtn } from "./copy-to-clipboard-btn"
 
 interface ApiAlertProps {
   title: string
@@ -28,13 +27,6 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
   description,
   variant = "public",
 }) => {
-  const { toast } = useToast()
-
-  const onCopy = (description: string) => {
-    navigator.clipboard.writeText(description)
-    toast({ title: "API Route copied to clipboard." })
-  }
-
   return (
     <Alert>
       <Server className="h-4 w-4" />
@@ -46,9 +38,7 @@ export const ApiAlert: React.FC<ApiAlertProps> = ({
         <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
           {description}
         </code>
-        <Button variant="outline" size="sm" onClick={() => onCopy(description)}>
-          <Copy className="h-4 w-4" />
-        </Button>
+        <CopyToClipBoardBtn content={description} />
       </AlertDescription>
     </Alert>
   )
