@@ -18,10 +18,6 @@ const useModalStore = create<Store>((set) => ({
     })),
 }))
 
-// const useCloseModal = (modalName: ModalName) => {
-//   return useModalStore((state) => state.closeModal.bind(null, modalName))
-// }
-
 const useOpenModal = () => {
   return useModalStore((state) => state.openModal)
 }

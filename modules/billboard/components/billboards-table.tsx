@@ -1,6 +1,6 @@
 "use client"
 
-import { FC } from "react"
+import { FC, useMemo } from "react"
 import { Billboard } from "@prisma/client"
 import {
   createColumnHelper,
@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-table"
 import { format } from "date-fns"
 
+import { formatDate } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -37,7 +38,7 @@ const columns = [
   }),
   columnHelper.accessor("createdAt", {
     header: () => "Date Added",
-    cell: (data) => <span>{format(data.getValue(), "P p")}</span>,
+    cell: (data) => <span>{formatDate(data.getValue())}</span>,
     size: 200,
   }),
   columnHelper.display({

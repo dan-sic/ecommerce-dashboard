@@ -2,6 +2,8 @@
 
 import { FC } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+import { useOpenModal } from "@/store/use-modal-store"
 import { Billboard } from "@prisma/client"
 import { Edit, MoreVertical, Trash } from "lucide-react"
 
@@ -13,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { useRemoveBillboard } from "../hooks/use-remove-billboard"
+import { RemoveBillboardModal } from "./remove-billboard-modal"
 
 interface BillboardTableActionsProps {
   billboard: Billboard
@@ -22,7 +24,8 @@ interface BillboardTableActionsProps {
 export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
   billboard,
 }) => {
-  const removeBillboard = useRemoveBillboard()
+  const openModal = useOpenModal()
+  const router = useRouter()
 
   return (
     <DropdownMenu>
@@ -38,7 +41,19 @@ export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
             Edit
           </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem onClick={() => removeBillboard(billboard)}>
+        <DropdownMenuItem
+          onClick={() =>
+            openModal(() => {
+              return (
+                <RemoveBillboardModal
+                  billboardId={billboard.id}
+                  storeId={billboard.storeId}
+                  onSuccess={() => router.refresh()}
+                />
+              )
+            })
+          }
+        >
           <Trash className="mr-2 h-4 w-4" />
           Remove
         </DropdownMenuItem>

@@ -77,7 +77,19 @@ const PUT = apiRequestMiddleware({
   },
 })
 
-export { GET, PUT }
+const DELETE = apiRequestMiddleware({
+  handler: async (_, { params }) => {
+    const { billboardId } = validateSchema(params, billboardIdParams)
+
+    await prisma.billboard.delete({
+      where: { id: billboardId },
+    })
+
+    return new Response(JSON.stringify({}), { status: 200 })
+  },
+})
+
+export { GET, PUT, DELETE }
 
 const getS3SignedUrl = async ({ fileId }: { fileId: string }) => {
   const { url, fields } = await createPresignedPost(s3Client, {

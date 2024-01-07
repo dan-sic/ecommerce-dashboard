@@ -1,4 +1,5 @@
 import { FC } from "react"
+import { notFound } from "next/navigation"
 import { RemoveStore } from "@/modules/store/components/remove-store"
 import { StoreSettingsForm } from "@/modules/store/components/store-settings-form"
 import { getStore } from "@/modules/store/data"
@@ -14,6 +15,10 @@ interface Props {
 const StorePage: FC<Props> = async ({ params }) => {
   const store = await getStore({ storeId: params.storeId })
 
+  if (!store) {
+    notFound()
+  }
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -23,7 +28,7 @@ const StorePage: FC<Props> = async ({ params }) => {
             Manage store preferences
           </span>
         </div>
-        <RemoveStore store={store!} />
+        <RemoveStore store={store} />
       </div>
       <Separator className="mb-5 mt-2" />
       <StoreSettingsForm store={store!} />

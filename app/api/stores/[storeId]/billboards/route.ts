@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache"
 import {
   billboardIdParams,
   billboardSchema,
@@ -70,6 +71,8 @@ const POST = apiRequestMiddleware({
         imageId,
       },
     })
+
+    revalidatePath("(dashboard)/[storeId]/billboards", "page")
 
     return new Response(JSON.stringify(billboard), { status: 201 })
   },
