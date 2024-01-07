@@ -20,14 +20,6 @@ export const nextConfig = {
     return config
   },
   images: {
-    domains: [process.env.S3_HOST],
-    // remotePatterns: [
-    //   {
-    //     protocol: "http",
-    //     hostname: "localhost",
-    //     port: "9000",
-    //     pathname: "/test-bucket/**",
-    //   },
-    // ],
+    domains: [process.env.NEXT_PUBLIC_S3_HOST],
   },
 }
