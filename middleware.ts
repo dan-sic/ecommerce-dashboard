@@ -1,23 +1,26 @@
-import { getToken } from 'next-auth/jwt'
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server"
+import { getToken } from "next-auth/jwt"
+import { withAuth } from "next-auth/middleware"
 
 export default withAuth(
   async (req) => {
     const token = await getToken({ req })
     const isAuthenticated = !!token
 
-    const isAuthPage = req.nextUrl.pathname.startsWith('/signin')
+    const isAuthPage = req.nextUrl.pathname.startsWith("/signin")
+    const isApiRoute = req.nextUrl.pathname.startsWith("/api")
 
+    console.log(req.url)
     if (isAuthPage) {
       if (isAuthenticated) {
-        return NextResponse.redirect(new URL('/', req.url))
+        return NextResponse.redirect(new URL("/", req.url))
       }
 
       return null
     }
 
-    if (!isAuthenticated) {
+    console.log(isApiRoute)
+    if (!isAuthenticated && !isApiRoute) {
       let from = req.nextUrl.pathname
       if (req.nextUrl.search) {
         from += req.nextUrl.search

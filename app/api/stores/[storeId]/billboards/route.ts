@@ -19,7 +19,7 @@ import { s3Client } from "@/lib/s3-client"
 import { validateSchema } from "@/lib/validate-schema"
 
 const GET = apiRequestMiddleware({
-  handler: async (_, params) => {
+  handler: async (_, { params }) => {
     const { storeId } = validateSchema(params, storeIdParam)
 
     const billboards = await getBillboards(storeId)

@@ -6,8 +6,8 @@ import { getSessionUser } from "@/lib/auth-options"
 import { validateSchema } from "@/lib/validate-schema"
 
 const GET = apiRequestMiddleware({
-  handler: async (_, params) => {
-    const { storeId } = validateSchema(params, storeIdParam)
+  handler: async (_, { params }) => {
+    const { storeId } = validateSchema({ params }, storeIdParam)
     const user = await getSessionUser()
 
     const store = await getStore({ storeId, userId: user.id })
