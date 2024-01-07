@@ -1,9 +1,10 @@
 import { useRouter } from "next/navigation"
 import { useModalStore } from "@/store/use-modal-store"
 import { useToast } from "@/store/use-toast-store"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { apiClient } from "@/lib/api-client"
+import { queryKeys } from "@/lib/consts/query-keys"
 
 import { BillboardFormData } from "../types"
 
@@ -11,6 +12,7 @@ export const useUpdateBillboard = () => {
   const { toast } = useToast()
   const router = useRouter()
   const { closeModal } = useModalStore()
+  const client = useQueryClient()
 
   return useMutation({
     mutationFn: ({
@@ -38,6 +40,7 @@ export const useUpdateBillboard = () => {
       toast({ title: "Store updated!" })
       closeModal()
       router.refresh()
+      client.invalidateQueries(queryKeys.billboards)
       router.push(`/${storeId}/billboards`)
     },
     onError: (error) => {

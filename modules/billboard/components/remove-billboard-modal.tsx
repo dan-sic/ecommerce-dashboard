@@ -50,7 +50,6 @@ export const RemoveBillboardModal: FC<DeleteBillboardModalProps> = ({
               {
                 onSuccess: () => {
                   closeModal()
-                  router.refresh()
                   onSuccess?.()
                 },
               }

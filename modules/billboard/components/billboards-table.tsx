@@ -1,28 +1,20 @@
 "use client"
 
-import { FC, useMemo } from "react"
+import { FC } from "react"
 import { useQuery } from "@tanstack/react-query"
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { format } from "date-fns"
 
 import { apiClient } from "@/lib/api-client"
 import { queryKeys } from "@/lib/consts/query-keys"
-import { cn, formatDate } from "@/lib/utils"
+import { formatDate } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { DataTable } from "@/components/data-table"
 
 import { BillboardClientModel } from "../types"
 import { BillboardTableActions } from "./billboards-table-actions"
@@ -63,6 +55,7 @@ export const BillboardsTable: FC<BillboardsTableProps> = ({ storeId }) => {
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
   })
 
   return (
@@ -77,48 +70,7 @@ export const BillboardsTable: FC<BillboardsTableProps> = ({ storeId }) => {
           className="max-w-sm"
         />
       </div>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow className="hover:bg-transparent" key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead
-                    key={header.id}
-                    style={{ width: header.getSize() }}
-                    className={cn(header.column.columnDef.meta?.thClassName)}
-                  >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow
-              className="border-none text-gray-400 hover:bg-gray-100/25"
-              key={row.id}
-              data-state={row.getIsSelected() && "selected"}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <TableCell
-                  key={cell.id}
-                  className={cn(cell.column.columnDef.meta?.tdClassName)}
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <DataTable table={table} />
     </div>
   )
 }

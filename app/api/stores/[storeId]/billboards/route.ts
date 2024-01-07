@@ -28,8 +28,6 @@ const GET = apiRequestMiddleware({
       },
     })
 
-    await new Promise((resolve) => setTimeout(resolve, 3000))
-
     const mapped = billboards.map(mapToBillboardClientModel)
 
     return new Response(JSON.stringify(mapped), {
