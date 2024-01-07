@@ -5,7 +5,7 @@ import { useMutation } from "@tanstack/react-query"
 
 import { apiClient } from "@/lib/api-client"
 
-import { BillboardFormData } from "../consts/billboard-schema"
+import { BillboardFormData } from "../types"
 
 export const useUpdateBillboard = () => {
   const { toast } = useToast()

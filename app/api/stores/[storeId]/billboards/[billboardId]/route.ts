@@ -1,8 +1,11 @@
 import {
   billboardIdParams,
-  billboardSchema,
+  newBillboardSchema,
 } from "@/modules/billboard/consts/billboard-schema"
-import { getBillboard } from "@/modules/billboard/data"
+import {
+  getBillboard,
+  mapToBillboardClientModel,
+} from "@/modules/billboard/data"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
 
@@ -17,9 +20,9 @@ const GET = apiRequestMiddleware({
   handler: async (_, params) => {
     const { storeId, billboardId } = validateSchema(params, billboardIdParams)
 
-    const store = await getBillboard(billboardId, storeId)
+    const billboard = await getBillboard(billboardId, storeId)
 
-    return new Response(JSON.stringify(store), { status: 200 })
+    return new Response(JSON.stringify(billboard), { status: 200 })
   },
   isProtectedRoute: false,
 })
@@ -34,7 +37,7 @@ const PUT = apiRequestMiddleware({
 
     const validatedData = validateSchema(
       { ...parsedData, file },
-      billboardSchema
+      newBillboardSchema
     )
 
     let imageId = validatedData.imageId
@@ -73,7 +76,9 @@ const PUT = apiRequestMiddleware({
       },
     })
 
-    return new Response(JSON.stringify(billboard), { status: 200 })
+    return new Response(JSON.stringify(mapToBillboardClientModel(billboard)), {
+      status: 200,
+    })
   },
 })
 

@@ -3,15 +3,15 @@
 import { FC } from "react"
 import { useRouter } from "next/navigation"
 import { useModalStore } from "@/store/use-modal-store"
-import { Billboard } from "@prisma/client"
 import { Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
+import { BillboardClientModel } from "../types"
 import { RemoveBillboardModal } from "./remove-billboard-modal"
 
 interface RemoveBillboardProps {
-  billboard: Billboard
+  billboard: BillboardClientModel
 }
 
 export const RemoveBillboard: FC<RemoveBillboardProps> = ({ billboard }) => {
@@ -25,7 +25,6 @@ export const RemoveBillboard: FC<RemoveBillboardProps> = ({ billboard }) => {
           billboardId={billboard.id}
           storeId={billboard.storeId}
           onSuccess={() => {
-            router.refresh()
             router.replace(`/${billboard.storeId}/billboards`)
           }}
         />

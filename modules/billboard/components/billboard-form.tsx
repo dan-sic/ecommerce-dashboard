@@ -1,9 +1,7 @@
 "use client"
 
-import { FC, useCallback, useEffect, useState, useTransition } from "react"
-import Image from "next/image"
+import { FC, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Billboard } from "@prisma/client"
 import { X } from "lucide-react"
 import { useForm } from "react-hook-form"
 
@@ -20,13 +18,14 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 
-import { BillboardFormData, billboardSchema } from "../consts/billboard-schema"
+import { newBillboardSchema } from "../consts/billboard-schema"
 import { useCreateBillboard } from "../hooks/use-create-billboard"
 import { useUpdateBillboard } from "../hooks/use-update-billboard"
+import { BillboardClientModel, BillboardFormData } from "../types"
 
 interface BillboardFormProps {
   storeId: string
-  billboard?: Billboard
+  billboard?: BillboardClientModel
 }
 
 export const BillboardForm: FC<BillboardFormProps> = ({
@@ -42,7 +41,7 @@ export const BillboardForm: FC<BillboardFormProps> = ({
   )
 
   const form = useForm<BillboardFormData>({
-    resolver: zodResolver(billboardSchema),
+    resolver: zodResolver(newBillboardSchema),
     defaultValues: {
       label: billboard?.label ?? "",
       file: null,

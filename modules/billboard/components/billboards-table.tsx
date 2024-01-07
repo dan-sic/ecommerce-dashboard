@@ -1,7 +1,7 @@
 "use client"
 
 import { FC, useMemo } from "react"
-import { Billboard } from "@prisma/client"
+import { BillboardClientModel } from "@/modules/billboard/data"
 import {
   createColumnHelper,
   flexRender,
@@ -25,10 +25,10 @@ import {
 import { BillboardTableActions } from "./billboards-table-actions"
 
 interface BillboardsTableProps {
-  billboards: Billboard[]
+  billboards: BillboardClientModel[]
 }
 
-const columnHelper = createColumnHelper<Billboard>()
+const columnHelper = createColumnHelper<BillboardClientModel>()
 
 const columns = [
   columnHelper.accessor("label", {
@@ -49,6 +49,7 @@ const columns = [
 ]
 
 export const BillboardsTable: FC<BillboardsTableProps> = ({ billboards }) => {
+  console.log(billboards)
   const table = useReactTable({
     data: billboards,
     columns,

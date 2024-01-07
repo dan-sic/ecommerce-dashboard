@@ -4,7 +4,6 @@ import { FC } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useOpenModal } from "@/store/use-modal-store"
-import { Billboard } from "@prisma/client"
 import { Edit, MoreVertical, Trash } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -15,10 +14,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { BillboardClientModel } from "../types"
 import { RemoveBillboardModal } from "./remove-billboard-modal"
 
 interface BillboardTableActionsProps {
-  billboard: Billboard
+  billboard: BillboardClientModel
 }
 
 export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
@@ -48,7 +48,6 @@ export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
                 <RemoveBillboardModal
                   billboardId={billboard.id}
                   storeId={billboard.storeId}
-                  onSuccess={() => router.refresh()}
                 />
               )
             })

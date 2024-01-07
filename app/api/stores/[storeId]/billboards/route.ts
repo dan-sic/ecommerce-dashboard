@@ -1,9 +1,12 @@
 import { revalidatePath } from "next/cache"
 import {
   billboardIdParams,
-  billboardSchema,
+  newBillboardSchema,
 } from "@/modules/billboard/consts/billboard-schema"
-import { getBillboards } from "@/modules/billboard/data"
+import {
+  getBillboards,
+  mapToBillboardClientModel,
+} from "@/modules/billboard/data"
 import { storeIdParam } from "@/modules/store/consts/store-schema"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
@@ -36,7 +39,7 @@ const POST = apiRequestMiddleware({
 
     const validatedData = validateSchema(
       { ...parsedData, file },
-      billboardSchema.pick({ label: true, file: true })
+      newBillboardSchema.pick({ label: true, file: true })
     )
 
     let imageId: string | null = null
@@ -74,7 +77,9 @@ const POST = apiRequestMiddleware({
 
     revalidatePath("(dashboard)/[storeId]/billboards", "page")
 
-    return new Response(JSON.stringify(billboard), { status: 201 })
+    return new Response(JSON.stringify(mapToBillboardClientModel(billboard)), {
+      status: 201,
+    })
   },
 })
 

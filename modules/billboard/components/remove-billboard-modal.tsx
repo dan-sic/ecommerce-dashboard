@@ -27,6 +27,7 @@ export const RemoveBillboardModal: FC<DeleteBillboardModalProps> = ({
 }) => {
   const { closeModal } = useModalStore()
   const { mutate, isLoading } = useRemoveBillboard()
+  const router = useRouter()
 
   return (
     <>
@@ -49,6 +50,7 @@ export const RemoveBillboardModal: FC<DeleteBillboardModalProps> = ({
               {
                 onSuccess: () => {
                   closeModal()
+                  router.refresh()
                   onSuccess?.()
                 },
               }

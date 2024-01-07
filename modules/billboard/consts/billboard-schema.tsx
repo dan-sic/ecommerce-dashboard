@@ -2,7 +2,7 @@ import { z } from "zod"
 
 import { ALLOWED_IMAGE_TYPES, UPLOAD_MAX_FILE_SIZE } from "@/lib/consts"
 
-export const billboardSchema = z.object({
+export const newBillboardSchema = z.object({
   label: z.string().min(3).max(255),
   file: z
     .any()
@@ -27,9 +27,15 @@ export const billboardSchema = z.object({
   imageId: z.string().nullable(),
 })
 
-export type BillboardFormData = z.infer<typeof billboardSchema>
-
 export const billboardIdParams = z.object({
   storeId: z.string(),
   billboardId: z.string(),
+})
+
+export const billboardSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  createdAt: z.date(),
+  storeId: z.string(),
+  imageId: z.string().nullable(),
 })
