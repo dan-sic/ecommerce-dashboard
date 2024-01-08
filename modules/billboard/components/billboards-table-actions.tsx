@@ -18,16 +18,18 @@ import { RemoveBillboardModal } from "./remove-billboard-modal"
 
 interface BillboardTableActionsProps {
   billboard: BillboardClientModel
+  disabled?: boolean
 }
 
 export const BillboardTableActions: FC<BillboardTableActionsProps> = ({
   billboard,
+  disabled,
 }) => {
   const openModal = useOpenModal()
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild disabled={disabled}>
         <Button variant="outline">
           <MoreVertical className="h-4 w-4" />
         </Button>

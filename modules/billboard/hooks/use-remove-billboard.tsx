@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { apiClient } from "@/lib/api-client"
 import { queryKeys } from "@/lib/consts/query-keys"
 
+import { BillboardClientModel } from "../types"
+
 export const useRemoveBillboard = () => {
   const { toast } = useToast()
   const client = useQueryClient()
@@ -16,12 +18,26 @@ export const useRemoveBillboard = () => {
       storeId: string
       billboardId: string
     }) => apiClient.delete(`stores/${storeId}/billboards/${billboardId}`),
-    onSuccess: () => {
-      client.invalidateQueries(queryKeys.billboards)
-      toast({ title: "Billboard removed" })
+    onMutate: async ({ billboardId, storeId }) => {
+      toast({ title: "Store removed" })
+
+      const previousSnapshot = client.getQueryData<BillboardClientModel[]>(
+        queryKeys.billboards
+      )
+
+      client.setQueryData<BillboardClientModel[]>(
+        queryKeys.billboards,
+        (old) => [...(old?.filter((b) => b.id !== billboardId) ?? [])]
+      )
+
+      return { previousSnapshot }
     },
-    onError: () => {
+    onError: (error, data, context) => {
       toast({ title: "Something went wrong" })
+      client.setQueryData(queryKeys.billboards, context?.previousSnapshot)
+    },
+    onSettled: () => {
+      client.invalidateQueries(queryKeys.billboards)
     },
   })
 }

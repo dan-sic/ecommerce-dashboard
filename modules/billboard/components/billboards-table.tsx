@@ -9,6 +9,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { Loader2 } from "lucide-react"
 
 import { apiClient } from "@/lib/api-client"
 import { queryKeys } from "@/lib/consts/query-keys"
@@ -28,7 +29,14 @@ const columnHelper = createColumnHelper<BillboardClientModel>()
 const columns = [
   columnHelper.accessor("label", {
     header: () => "Label",
-    cell: (data) => <span>{data.getValue()}</span>,
+    cell: (data) => (
+      <div className="flex space-x-2">
+        <span>{data.getValue()}</span>
+        {data.row.original.temp && (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        )}
+      </div>
+    ),
   }),
   columnHelper.accessor("createdAt", {
     header: () => "Date Added",
@@ -36,7 +44,12 @@ const columns = [
   }),
   columnHelper.display({
     id: "actions",
-    cell: (props) => <BillboardTableActions billboard={props.row.original} />,
+    cell: (props) => (
+      <BillboardTableActions
+        billboard={props.row.original}
+        disabled={props.row.original.temp}
+      />
+    ),
     meta: {
       tdClassName: "text-right",
     },
@@ -47,15 +60,22 @@ export const BillboardsTable: FC<BillboardsTableProps> = ({ storeId }) => {
   const { data } = useQuery({
     queryKey: queryKeys.billboards,
     queryFn: () =>
-      apiClient.get<BillboardClientModel[]>(`/stores/${storeId}/billboards`),
+      apiClient
+        .get<BillboardClientModel[]>(`/stores/${storeId}/billboards`)
+        .then((res) => res.data),
   })
 
   const table = useReactTable({
-    data: data?.data ?? [],
+    data: data ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: 5,
+      },
+    },
   })
 
   return (

@@ -1,7 +1,4 @@
-import {
-  billboardIdParams,
-  newBillboardSchema,
-} from "@/modules/billboard/consts/billboard-schema"
+import { newBillboardSchema } from "@/modules/billboard/consts/billboard-schema"
 import {
   getBillboard,
   mapToBillboardClientModel,
@@ -13,12 +10,16 @@ import { apiRequestMiddleware } from "@/lib/api-request-middleware"
 import { UPLOAD_MAX_FILE_SIZE } from "@/lib/consts"
 import prisma from "@/lib/db"
 import { getEnvVariable } from "@/lib/get-env-variable"
+import { pathParamsSchema } from "@/lib/params-schema"
 import { s3Client } from "@/lib/s3-client"
 import { validateSchema } from "@/lib/validate-schema"
 
 const GET = apiRequestMiddleware({
   handler: async (_, { params }) => {
-    const { storeId, billboardId } = validateSchema(params, billboardIdParams)
+    const { storeId, billboardId } = validateSchema(
+      params,
+      pathParamsSchema.pick({ storeId: true, billboardId: true })
+    )
 
     const billboard = await getBillboard(billboardId, storeId)
 
@@ -29,7 +30,10 @@ const GET = apiRequestMiddleware({
 
 const PUT = apiRequestMiddleware({
   handler: async (req: Request, { params }) => {
-    const { storeId, billboardId } = validateSchema(params, billboardIdParams)
+    const { storeId, billboardId } = validateSchema(
+      params,
+      pathParamsSchema.pick({ storeId: true, billboardId: true })
+    )
 
     const body = await req.formData()
     const parsedData = JSON.parse((body.get("data") as string) ?? "{}")
@@ -84,7 +88,10 @@ const PUT = apiRequestMiddleware({
 
 const DELETE = apiRequestMiddleware({
   handler: async (_, { params }) => {
-    const { billboardId } = validateSchema(params, billboardIdParams)
+    const { billboardId } = validateSchema(
+      params,
+      pathParamsSchema.pick({ billboardId: true })
+    )
 
     await prisma.billboard.delete({
       where: { id: billboardId },

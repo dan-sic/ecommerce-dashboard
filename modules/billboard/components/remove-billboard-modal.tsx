@@ -27,7 +27,6 @@ export const RemoveBillboardModal: FC<DeleteBillboardModalProps> = ({
 }) => {
   const { closeModal } = useModalStore()
   const { mutate, isLoading } = useRemoveBillboard()
-  const router = useRouter()
 
   return (
     <>
@@ -44,17 +43,11 @@ export const RemoveBillboardModal: FC<DeleteBillboardModalProps> = ({
         <Button
           variant="destructive"
           isLoading={isLoading}
-          onClick={() =>
-            mutate(
-              { storeId, billboardId },
-              {
-                onSuccess: () => {
-                  closeModal()
-                  onSuccess?.()
-                },
-              }
-            )
-          }
+          onClick={() => {
+            mutate({ storeId, billboardId })
+            closeModal()
+            onSuccess?.()
+          }}
         >
           Confirm
         </Button>

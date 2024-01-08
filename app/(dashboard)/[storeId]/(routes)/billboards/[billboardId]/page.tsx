@@ -2,9 +2,9 @@ import { FC } from "react"
 import { notFound } from "next/navigation"
 import { BillboardForm } from "@/modules/billboard/components/billboard-form"
 import { RemoveBillboard } from "@/modules/billboard/components/remove-billboard"
-import { billboardIdParams } from "@/modules/billboard/consts/billboard-schema"
 import { getBillboard } from "@/modules/billboard/data"
 
+import { pathParamsSchema } from "@/lib/params-schema"
 import { validateSchema } from "@/lib/validate-schema"
 import { Separator } from "@/components/ui/separator"
 
@@ -13,9 +13,11 @@ interface Props {
 }
 
 const EditBillboardPage: FC<Props> = async ({ params }) => {
-  const { storeId, billboardId } = validateSchema(params, billboardIdParams)
+  const { storeId, billboardId } = validateSchema(
+    params,
+    pathParamsSchema.pick({ storeId: true, billboardId: true })
+  )
   const billboard = await getBillboard(billboardId, storeId)
-
   if (!billboard) {
     notFound()
   }

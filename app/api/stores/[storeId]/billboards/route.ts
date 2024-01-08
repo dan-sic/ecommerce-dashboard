@@ -1,10 +1,5 @@
-import { revalidatePath } from "next/cache"
-import {
-  billboardIdParams,
-  newBillboardSchema,
-} from "@/modules/billboard/consts/billboard-schema"
+import { newBillboardSchema } from "@/modules/billboard/consts/billboard-schema"
 import { mapToBillboardClientModel } from "@/modules/billboard/data"
-import { storeIdParam } from "@/modules/store/consts/store-schema"
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post"
 import { v4 as uuidv4 } from "uuid"
 
@@ -12,12 +7,16 @@ import { apiRequestMiddleware } from "@/lib/api-request-middleware"
 import { UPLOAD_MAX_FILE_SIZE } from "@/lib/consts"
 import prisma from "@/lib/db"
 import { getEnvVariable } from "@/lib/get-env-variable"
+import { pathParamsSchema } from "@/lib/params-schema"
 import { s3Client } from "@/lib/s3-client"
 import { validateSchema } from "@/lib/validate-schema"
 
 const GET = apiRequestMiddleware({
   handler: async (_, { params }) => {
-    const { storeId } = validateSchema(params, storeIdParam)
+    const { storeId } = validateSchema(
+      params,
+      pathParamsSchema.pick({ storeId: true })
+    )
 
     const billboards = await prisma.billboard.findMany({
       where: {
@@ -39,7 +38,10 @@ const GET = apiRequestMiddleware({
 
 const POST = apiRequestMiddleware({
   handler: async (req: Request, { params }) => {
-    const { storeId } = validateSchema(params, storeIdParam)
+    const { storeId } = validateSchema(
+      params,
+      pathParamsSchema.pick({ storeId: true })
+    )
 
     const body = await req.formData()
     const parsedData = JSON.parse((body.get("data") as string) ?? "{}")
@@ -82,8 +84,6 @@ const POST = apiRequestMiddleware({
         imageId,
       },
     })
-
-    revalidatePath("(dashboard)/[storeId]/billboards", "page")
 
     return new Response(JSON.stringify(mapToBillboardClientModel(billboard)), {
       status: 201,

@@ -5,13 +5,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { apiClient } from "@/lib/api-client"
 import { queryKeys } from "@/lib/consts/query-keys"
+import { getRandomId } from "@/lib/utils"
 
-import { BillboardFormData } from "../types"
+import { BillboardClientModel, BillboardFormData } from "../types"
 
 export const useCreateBillboard = () => {
   const { toast } = useToast()
   const router = useRouter()
-  const { closeModal } = useModalStore()
   const client = useQueryClient()
 
   return useMutation({
@@ -28,14 +28,41 @@ export const useCreateBillboard = () => {
 
       return apiClient.post(`stores/${storeId}/billboards`, formData)
     },
-    onSuccess: (data, { storeId }) => {
-      toast({ title: "Store created!" })
-      closeModal()
-      client.invalidateQueries(queryKeys.billboards)
+    onMutate: async ({ data, storeId }) => {
+      toast({ title: "Store created" })
+
       router.push(`/${storeId}/billboards`)
+
+      await client.cancelQueries({ queryKey: queryKeys.billboards })
+
+      const previousSnapshot = client.getQueryData<BillboardClientModel[]>(
+        queryKeys.billboards
+      )
+
+      client.setQueryData<BillboardClientModel[]>(
+        queryKeys.billboards,
+        (old) => [
+          {
+            id: getRandomId(),
+            label: data.label,
+            createdAt: new Date().toISOString(),
+            imageId: null,
+            storeId,
+            temp: true,
+          },
+          ...(old ?? []),
+        ]
+      )
+
+      return { previousSnapshot }
     },
-    onError: (error) => {
+    onError: (error, data, context) => {
+      console.log(error)
       toast({ title: "Something went wrong" })
+      client.setQueryData(queryKeys.billboards, context?.previousSnapshot)
+    },
+    onSettled: () => {
+      client.invalidateQueries(queryKeys.billboards)
     },
   })
 }

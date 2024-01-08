@@ -64,6 +64,8 @@ export const BillboardForm: FC<BillboardFormProps> = ({
     form.setValue("imageId", null, { shouldDirty: true })
   }
 
+  console.log(form.getValues())
+
   const updateImagePreview = async (file: File) => {
     // waiting for validation to complete before setting preview
     setTimeout(() => {

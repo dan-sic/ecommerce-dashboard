@@ -27,11 +27,6 @@ export const newBillboardSchema = z.object({
   imageId: z.string().nullable(),
 })
 
-export const billboardIdParams = z.object({
-  storeId: z.string(),
-  billboardId: z.string(),
-})
-
 export const billboardClientModelSchema = z.object({
   id: z.string(),
   label: z.string(),

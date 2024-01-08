@@ -2,11 +2,11 @@
 
 import { FC, useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { storeIdParam } from "@/modules/store/consts/store-schema"
 import { useOpenModal } from "@/store/use-modal-store"
 import { Store } from "@prisma/client"
 import { PlusCircle, Store as StoreIcon } from "lucide-react"
 
+import { pathParamsSchema } from "@/lib/params-schema"
 import { cn } from "@/lib/utils"
 import { validateSchema } from "@/lib/validate-schema"
 import { Search } from "@/components/ui/input"
@@ -33,7 +33,10 @@ export const StoreSelect: FC<StoreSelectProps> = ({ stores }) => {
   const pathName = usePathname()
   const openModal = useOpenModal()
 
-  const { storeId } = validateSchema(params, storeIdParam)
+  const { storeId } = validateSchema(
+    params,
+    pathParamsSchema.pick({ storeId: true })
+  )
 
   return (
     <Select
