@@ -1,6 +1,7 @@
 "use client"
 
 import { FC, useState } from "react"
+import { Route } from "next"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useOpenModal } from "@/store/use-modal-store"
 import { Store } from "@prisma/client"
@@ -42,7 +43,9 @@ export const StoreSelect: FC<StoreSelectProps> = ({ stores }) => {
     <Select
       value={storeId}
       onOpenChange={() => setQuery("")}
-      onValueChange={(value) => router.push(pathName.replace(storeId, value))}
+      onValueChange={(value) =>
+        router.push(pathName.replace(storeId, value) as Route)
+      }
     >
       <SelectTrigger className="w-[180px]">
         <div className="flex items-center space-x-2">
