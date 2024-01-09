@@ -5,23 +5,45 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
+  e2e:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
-      - name: Deploy to VPS via SSH
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          command: |
-            cd /var/www/ecommerce-dashboard
-            docker-compose -f docker-compose.prod.yml down
-            git fetch origin main
-            git reset --hard origin/main
-            npm run docker:prod
-          host: ${{ secrets.HOST }}
-          port: ${{ secrets.PORT }}
-          username: ${{ secrets.USER }}
-          privateKey: ${{ secrets.PRIVATE_KEY}}
-  
+      - name: Build and start containers
+        run: docker-compose -f docker-compose.e2e.yml up --build -d
+
+      - name: Check app availability
+        run: |
+          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
+            printf '.'
+            sleep 5
+          done
+
+      # - name: Run e2e tests
+      #   run: docker-compose -f docker-compose.e2e.yml exec cypress ./node_modules/.bin/cypress run
+
+      - name: Stop and remove containers
+        run: docker-compose -f docker-compose.e2e.yml down
+        if: always()
+
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+
+  #     - name: Deploy to VPS via SSH
+  #       uses: garygrossgarten/github-action-ssh@release
+  #       with:
+  #         command: |
+  #           cd /var/www/ecommerce-dashboard
+  #           docker-compose -f docker-compose.prod.yml down
+  #           git fetch origin main
+  #           git reset --hard origin/main
+  #           npm run docker:prod
+  #         host: ${{ secrets.HOST }}
+  #         port: ${{ secrets.PORT }}
+  #         username: ${{ secrets.USER }}
+  #         privateKey: ${{ secrets.PRIVATE_KEY}}

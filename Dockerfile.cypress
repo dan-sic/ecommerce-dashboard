@@ -1,0 +1,14 @@
+FROM cypress/base:20.10.0
+
+COPY ./e2e/package.json /tmp/package.json
+COPY ./e2e/package-lock.json /tmp/package-lock.json
+RUN cd /tmp && npm ci
+RUN CI=true /tmp/node_modules/.bin/cypress install
+RUN mkdir -p /e2e && cp -a /tmp/node_modules /e2e/
+
+WORKDIR /e2e
+
+COPY ./e2e/cypress.config.ts /e2e/cypress.config.ts
+COPY ./e2e/tsconfig.json /e2e/tsconfig.json
+
+CMD tail -f /dev/null
