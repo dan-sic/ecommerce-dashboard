@@ -9,7 +9,7 @@ const envSchema = z.object({
   EMAIL_FROM: z.string(),
   NEXTAUTH_SECRET: z.string(),
   NODE_ENV: z.string(),
-  DEV_S3_HOST: z.string(),
+  DEV_S3_HOST: z.string().default(""),
   S3_BUCKET_NAME: z.string(),
   S3_CLIENT_KEY: z.string(),
   S3_CLIENT_SECRET: z.string(),

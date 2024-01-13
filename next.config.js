@@ -18,6 +18,7 @@ module.exports = (phase, defaultConfig) =>
         include: [
           path.resolve(__dirname, "./s3.mjs"),
           path.resolve(__dirname, "./ecosystem.config.js"),
+          path.resolve(__dirname, "./e2e/"),
         ],
         use: "ignore-loader",
       })
