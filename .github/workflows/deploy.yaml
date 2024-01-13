@@ -1,51 +1,31 @@
 name: Deploy to VPS
 
-# on:
-#   push:
-#     branches: [main]
 on:
-  workflow_dispatch:
+  workflow_run:
+    workflows: [Test E2E]
+    types:
+      - completed
 
 jobs:
-  e2e:
+  deploy:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Build and start containers
-        run: docker-compose -f docker-compose.e2e.yml up --build -d
-
-      - name: Check app availability
-        run: |
-          until $(curl --output /dev/null --silent --head --fail http://localhost:3000); do
-            printf '.'
-            sleep 5
-          done
-
-      # - name: Run e2e tests
-      #   run: docker-compose -f docker-compose.e2e.yml exec cypress ./node_modules/.bin/cypress run
-
-      - name: Stop and remove containers
-        run: docker-compose -f docker-compose.e2e.yml down
-        if: always()
-
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-
-  #     - name: Deploy to VPS via SSH
-  #       uses: garygrossgarten/github-action-ssh@release
-  #       with:
-  #         command: |
-  #           cd /var/www/ecommerce-dashboard
-  #           docker-compose -f docker-compose.prod.yml down
-  #           git fetch origin main
-  #           git reset --hard origin/main
-  #           npm run docker:prod
-  #         host: ${{ secrets.HOST }}
-  #         port: ${{ secrets.PORT }}
-  #         username: ${{ secrets.USER }}
-  #         privateKey: ${{ secrets.PRIVATE_KEY}}
+      - name: Deploy to VPS via SSH
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: |
+            cd /var/www/ecommerce-dashboard
+            git fetch origin main
+            git reset --hard origin/main
+            npm run docker:prod
+            docker container prune -f
+            docker image prune -f
+            echo Containers updated successfully.
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USER }}
+          privateKey: ${{ secrets.PRIVATE_KEY}}
